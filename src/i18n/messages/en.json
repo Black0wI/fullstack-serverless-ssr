@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "pricing": "Pricing",
+    "docs": "Documentation",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Your tech portal",
+    "subtitle": "Modern, fast and secure application",
+    "cta": "Get started"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "back": "Back",
+    "next": "Next",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "noResults": "No results"
+  },
+  "footer": {
+    "copyright": "© {year} Tech Portal. All rights reserved.",
+    "privacy": "Privacy policy",
+    "terms": "Terms of service"
+  }
+}

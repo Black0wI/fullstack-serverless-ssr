@@ -29,6 +29,15 @@ export default $config({
       // link: [bucket],
     });
 
+    // ── Cron Job (exemple: cleanup toutes les heures) ──
+    // new sst.aws.Cron("Cleanup", {
+    //   schedule: "rate(1 hour)",
+    //   function: {
+    //     handler: "src/functions/cleanup.handler",
+    //     timeout: "5 minutes",
+    //   },
+    // });
+
     return {
       url: site.url,
     };

@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "docs": "Documentation",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Votre portail tech",
+    "subtitle": "Application moderne, rapide et sécurisée",
+    "cta": "Commencer"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "back": "Retour",
+    "next": "Suivant",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "search": "Rechercher",
+    "noResults": "Aucun résultat"
+  },
+  "footer": {
+    "copyright": "© {year} Tech Portal. Tous droits réservés.",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation"
+  }
+}
