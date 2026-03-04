@@ -38,6 +38,6 @@ cp -r _template mon-outil
 
 ## Index des Outils
 
-| Outil | Description | Langage |
-|-------|-------------|---------|
-| `_template` | Template de départ | Python |
+| Outil       | Description        | Langage |
+| ----------- | ------------------ | ------- |
+| `_template` | Template de départ | Python  |

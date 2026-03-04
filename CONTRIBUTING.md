@@ -13,10 +13,10 @@ make dev
 
 ## Branch Strategy
 
-| Branch  | Purpose                                         |
-| ------- | ----------------------------------------------- |
-| `main`  | Production — auto-deploys on push               |
-| `dev`   | Development — work-in-progress, PR to main      |
+| Branch | Purpose                                    |
+| ------ | ------------------------------------------ |
+| `main` | Production — auto-deploys on push          |
+| `dev`  | Development — work-in-progress, PR to main |
 
 ## Commit Conventions
 

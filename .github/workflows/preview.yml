@@ -1,5 +1,6 @@
 # ============================================
-# PREVIEW — Terraform Plan on Pull Requests
+# PREVIEW — SST diff on Pull Requests
+# Shows infrastructure changes before merging
 # ============================================
 
 name: Preview
@@ -7,15 +8,7 @@ name: Preview
 on:
   pull_request:
     branches: [main]
-
-concurrency:
-  group: preview-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
-
-env:
-  NODE_VERSION: "22"
-  TERRAFORM_VERSION: "1.10"
-  AWS_REGION: "eu-west-3"
+    types: [opened, synchronize]
 
 permissions:
   id-token: write
@@ -24,66 +17,77 @@ permissions:
 
 jobs:
   preview:
-    name: Build & Plan
+    name: SST Diff
     runs-on: ubuntu-latest
 
     steps:
-      # ── Checkout ──
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ── Node.js ──
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: "22"
           cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build (static export)
-        run: npm run build
-
-      # ── AWS Credentials ──
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: eu-west-3
 
-      # ── Terraform Plan ──
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TERRAFORM_VERSION }}
+      - name: SST Diff
+        id: diff
+        run: |
+          set +e
+          OUTPUT=$(npx sst diff --stage production 2>&1)
+          EXIT_CODE=$?
+          set -e
 
-      - name: Terraform Init
-        working-directory: infra
-        run: terraform init
+          echo "output<<EOF" >> $GITHUB_OUTPUT
+          echo "$OUTPUT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
 
-      - name: Terraform Plan
-        id: plan
-        working-directory: infra
-        run: terraform plan -no-color
-        continue-on-error: true
-
-      # ── PR Comment ──
-      - name: Comment Plan on PR
+      - name: Comment PR with diff
         uses: actions/github-script@v7
         with:
           script: |
-            const output = `### 🏗️ Terraform Plan
+            const output = `${{ steps.diff.outputs.output }}`;
+            const body = `### 🔍 SST Infrastructure Diff
 
             \`\`\`
-            ${{ steps.plan.outputs.stdout }}
+            ${output}
             \`\`\`
 
-            *Triggered by @${{ github.actor }} on \`${{ github.event.pull_request.head.ref }}\`*`;
+            *Pushed by @${{ github.actor }}*`;
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            // Find existing comments
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: output
+              issue_number: context.issue.number,
             });
+
+            const existingComment = comments.find(c =>
+              c.body.includes('SST Infrastructure Diff')
+            );
+
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body,
+              });
+            }

@@ -2,17 +2,17 @@
 module.exports = {
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://example.com",
     generateRobotsTxt: true,
-    outDir: "./out",
     generateIndexSitemap: false,
 
-    // Static export — no server-side paths
-    exclude: ["/404"],
+    // Exclude internal pages
+    exclude: ["/404", "/500", "/api/*"],
 
     robotsTxtOptions: {
         policies: [
             {
                 userAgent: "*",
                 allow: "/",
+                disallow: ["/api/"],
             },
         ],
     },

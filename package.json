@@ -2,7 +2,7 @@
   "name": "tech-portal",
   "version": "0.1.0",
   "private": true,
-  "description": "Next.js Static Edge — AWS CloudFront + Terraform + Claude Opus 4.6",
+  "description": "Next.js Full-Stack — AWS SST v3 + CloudFront + Lambda + Claude AI",
   "author": "Jean-Baptiste MONIN",
   "license": "MIT",
   "scripts": {
@@ -45,7 +45,6 @@
     "lint-staged": "^16.3.2",
     "next-sitemap": "^4.2.3",
     "prettier": "^3.4.0",
-    "serve": "^14.2.6",
     "typescript": "^5.7.0",
     "vitest": "^4.0.18"
   },

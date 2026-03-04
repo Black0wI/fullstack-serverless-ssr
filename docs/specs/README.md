@@ -15,22 +15,23 @@ SPEC-XXX-slug-court.md
 ```
 
 Exemples :
+
 - `SPEC-001-authentification.md`
 - `SPEC-002-dashboard-analytics.md`
 - `SPEC-003-notifications-email.md`
 
 ## Statuts
 
-| Statut | Signification |
-|--------|--------------|
-| `draft` | En cours de rédaction |
-| `review` | En attente de validation |
-| `approved` | Validé, prêt à implémenter |
-| `in-progress` | En cours de développement |
-| `done` | Implémenté et vérifié |
+| Statut        | Signification              |
+| ------------- | -------------------------- |
+| `draft`       | En cours de rédaction      |
+| `review`      | En attente de validation   |
+| `approved`    | Validé, prêt à implémenter |
+| `in-progress` | En cours de développement  |
+| `done`        | Implémenté et vérifié      |
 
 ## Index des Spécifications
 
-| Ref | Titre | Statut | Priorité |
-|-----|-------|--------|----------|
-| — | *Aucune spec encore* | — | — |
+| Ref | Titre                | Statut | Priorité |
+| --- | -------------------- | ------ | -------- |
+| —   | _Aucune spec encore_ | —      | —        |

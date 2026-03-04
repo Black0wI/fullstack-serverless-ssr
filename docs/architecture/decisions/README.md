@@ -8,6 +8,6 @@ Chaque ADR suit le nommage : `XXXX-titre-court.md`
 
 ## Index
 
-| # | Titre | Statut | Date |
-|---|-------|--------|------|
+| #    | Titre                                                            | Statut   | Date       |
+| ---- | ---------------------------------------------------------------- | -------- | ---------- |
 | 0001 | [Static Export sur CloudFront](0001-static-export-cloudfront.md) | Accepted | 2026-03-03 |

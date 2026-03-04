@@ -2,7 +2,7 @@
 # TECH PORTAL — Makefile
 # ============================================
 
-.PHONY: setup dev build lint format type-check deploy clean help push force-deploy
+.PHONY: setup dev build lint format type-check deploy clean help push force-deploy test
 
 # ── Variables ──
 ENV ?= production
@@ -26,7 +26,7 @@ setup: ## Initialize the project
 dev: ## Start dev server (Turbopack, port 4000)
 	npm run dev
 
-build: ## Build static export
+build: ## Build the application
 	npm run build
 
 # ── Quality ──
@@ -44,6 +44,9 @@ format-check: ## Check code formatting
 
 type-check: ## TypeScript type checking
 	npm run type-check
+
+test: ## Run unit tests (Vitest)
+	npm test
 
 check: lint type-check format-check build ## Run all quality checks
 
@@ -97,33 +100,22 @@ force-deploy: ## ⚠️  URGENCE: Push direct sur main (bypass PR)
 	@echo ""
 	@echo "🚀 Force deploy terminé. Le déploiement CI/CD se lance automatiquement."
 
-# ── Infrastructure ──
-infra-init: ## Initialize Terraform
-	cd infra && terraform init
+# ── Infrastructure (SST) ──
+deploy: ## Deploy to production with SST
+	@echo "🚀 Deploying to $(ENV) with SST..."
+	npx sst deploy --stage $(ENV)
+	@echo "✅ Deployed to $(ENV)!"
 
-infra-plan: ## Preview infrastructure changes
-	cd infra && terraform plan
+sst-dev: ## Start SST dev mode (live Lambda)
+	npx sst dev
 
-infra-apply: ## Apply infrastructure changes
-	cd infra && terraform apply
+sst-diff: ## Preview infrastructure changes
+	npx sst diff --stage $(ENV)
 
-deploy: build ## Build and deploy to production (via Terraform)
-	@echo "🚀 Deploying to $(ENV)..."
-	cd infra && terraform init && terraform apply -auto-approve
-	@BUCKET=$$(cd infra && terraform output -raw s3_bucket_name) && \
-	DIST_ID=$$(cd infra && terraform output -raw cloudfront_distribution_id) && \
-	echo "📤 Syncing to S3..." && \
-	aws s3 sync out/ s3://$$BUCKET --delete \
-		--cache-control "public, max-age=31536000, immutable" \
-		--exclude "*.html" --exclude "*.json" && \
-	aws s3 sync out/ s3://$$BUCKET --delete \
-		--cache-control "public, max-age=0, must-revalidate" \
-		--include "*.html" --include "*.json" --exclude "_next/*" && \
-	echo "🔄 Invalidating CloudFront..." && \
-	aws cloudfront create-invalidation --distribution-id $$DIST_ID --paths "/*" && \
-	echo "✅ Deployed to $(ENV)!"
+sst-remove: ## Remove SST infrastructure
+	npx sst remove --stage $(ENV)
 
 # ── Cleanup ──
 clean: ## Clean build artifacts
-	rm -rf out/ .next/ node_modules/.cache
+	rm -rf .next/ .sst/ node_modules/.cache .open-next/
 	@echo "🧹 Cleaned."

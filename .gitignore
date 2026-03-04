@@ -35,13 +35,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# terraform
-infra/.terraform/
-infra/*.tfstate
-infra/*.tfstate.*
-infra/.terraform.lock.hcl
-infra/terraform.tfvars
-infra/*.tfplan
+# SST
+.sst/
+.open-next/
 
 # IDE
 .idea/

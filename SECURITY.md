@@ -9,6 +9,7 @@ If you discover a security vulnerability in this project, please report it respo
 Instead, send details to: **security@orizon.sx**
 
 Include:
+
 - Description of the vulnerability
 - Steps to reproduce
 - Potential impact

@@ -1,29 +1,28 @@
-# Tech Portal — Static Edge Boilerplate
+# Tech Portal — Next.js Full-Stack on AWS
 
 [![CI](https://github.com/itakademy/tech-portal/actions/workflows/ci.yml/badge.svg)](https://github.com/itakademy/tech-portal/actions/workflows/ci.yml)
 [![Deploy](https://github.com/itakademy/tech-portal/actions/workflows/deploy.yml/badge.svg)](https://github.com/itakademy/tech-portal/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-> 🚀 Production-ready Next.js 15 boilerplate deployed on AWS CloudFront via Terraform IaC, with GitHub Actions CI/CD, full test suite, PWA support, and Claude AI integration.
+> 🚀 Production-ready Next.js 15 full-stack boilerplate deployed on AWS with SST v3 (OpenNext), GitHub Actions CI/CD, full test suite, PWA support, and Claude AI integration.
 
 ## Architecture
 
 ```
 ┌──────────────┐     ┌──────────────────┐     ┌─────────────┐
-│  GitHub Push │────▶│  GitHub Actions   │────▶│  S3 Bucket  │
-│  (main)      │     │  Build + Terraform│     │  (static)   │
+│  GitHub Push │────▶│  GitHub Actions   │────▶│  SST Deploy │
+│  (main)      │     │  Build + SST      │     │  (OpenNext) │
 └──────────────┘     └──────────────────┘     └──────┬──────┘
-                                                      │ OAC
-                                              ┌───────▼───────┐
-                                              │  CloudFront    │
-                                              │  + Functions   │
-                                              │  (Edge CDN)    │
-                                              └───────┬───────┘
                                                       │
-                                              ┌───────▼───────┐
-                                              │   End Users    │
-                                              │  (Global Edge) │
-                                              └───────────────┘
+                      ┌───────────────┐       ┌───────▼───────┐
+                      │  Lambda@Edge  │◀──────│  CloudFront    │
+                      │  (SSR/API)    │       │  (Edge CDN)    │
+                      └───────┬───────┘       └───────┬───────┘
+                              │                       │
+                      ┌───────▼───────┐       ┌───────▼───────┐
+                      │  S3 Bucket    │       │   End Users    │
+                      │  (assets)     │       │  (Global Edge) │
+                      └───────────────┘       └───────────────┘
 ```
 
 ## Quick Start
@@ -41,24 +40,24 @@ make dev
 
 ## Stack
 
-| Layer          | Technology                             |
-| -------------- | -------------------------------------- |
-| Framework      | Next.js 15 (App Router, static export) |
-| Language       | TypeScript 5 (strict mode)             |
-| Styling        | Vanilla CSS (custom properties)        |
-| Hosting        | AWS CloudFront + S3 (OAC)              |
-| IaC            | Terraform (AWS Provider ~> 5.0)        |
-| CI/CD          | GitHub Actions                         |
-| Edge Functions | CloudFront Functions (JS 2.0)          |
-| Unit Tests     | Vitest + Testing Library               |
-| E2E Tests      | Playwright                             |
-| Performance    | Lighthouse CI (score ≥ 90)             |
-| AI             | Claude Opus 4.6 (CLAUDE.md)            |
+| Layer       | Technology                            |
+| ----------- | ------------------------------------- |
+| Framework   | Next.js 15 (App Router, SSR + Static) |
+| Language    | TypeScript 5 (strict mode)            |
+| Styling     | Vanilla CSS (custom properties)       |
+| Hosting     | AWS CloudFront + Lambda + S3          |
+| IaC         | SST v3 (OpenNext)                     |
+| CI/CD       | GitHub Actions                        |
+| Unit Tests  | Vitest + Testing Library              |
+| E2E Tests   | Playwright                            |
+| Performance | Lighthouse CI (score ≥ 90)            |
+| AI          | Claude Opus 4.6 (CLAUDE.md)           |
 
 ## Features
 
-- ⚡ **Static Export** — 0 cold start, global edge delivery
-- 🔒 **CSP + HSTS** — Security headers via CloudFront Functions
+- ⚡ **Full-Stack** — SSR, API Routes, Server Actions, ISR
+- 🌐 **Global Edge** — CloudFront CDN via OpenNext
+- 🔒 **Security** — CSP, HSTS, security headers
 - 📱 **PWA** — Installable, offline-first with service worker
 - 🧪 **Full Test Suite** — Vitest (unit) + Playwright (E2E) + Lighthouse (perf)
 - 📊 **Bundle Analyzer** — `npm run analyze` to visualize JS size
@@ -73,11 +72,12 @@ make dev
 
 ```bash
 make dev          # Dev server (Turbopack, port 4000)
-make build        # Static export → out/ (+ sitemap + robots.txt)
+make build        # Build the application
+make deploy       # Deploy to production with SST
 make check        # Lint + type-check + format + build
 make push         # Push ai-agent → auto-PR to main
 make force-deploy # ⚠️ Emergency: direct push to main
-make deploy       # Full deploy (build → Terraform → S3 → CloudFront → Cloudflare)
+make sst-dev      # SST dev mode (live Lambda)
 make help         # Show all commands
 
 npm test          # Unit tests (Vitest)
@@ -102,15 +102,14 @@ All AI code goes through `make push` → auto-PR → **mandatory human review** 
 ### Prerequisites
 
 - AWS CLI configured with appropriate credentials
-- Terraform >= 1.5
 - Node.js >= 22
 
 ### First Deployment
 
 ```bash
-# 1. Configure variables
-cp infra/terraform.tfvars.example infra/terraform.tfvars
-# Edit terraform.tfvars with your values
+# 1. Configure environment
+cp .env.example .env
+# Edit .env with your values
 
 # 2. Deploy
 make deploy
@@ -125,21 +124,25 @@ make deploy
 | **Secret**   | `CLOUDFLARE_ZONE_ID`     | Cloudflare zone ID                   |
 | **Variable** | `CLOUDFLARE_RECORD_NAME` | CNAME record name                    |
 
-### Custom Domain (Optional)
+### Custom Domain
 
-1. Create an ACM certificate in `us-east-1`
-2. Set `domain_name` and `acm_certificate_arn` in `terraform.tfvars`
-3. Cloudflare CNAME is auto-updated on each deploy
+Uncomment the `domain` property in `sst.config.ts`:
+
+```ts
+new sst.aws.Nextjs("Web", {
+  domain: "portal.example.com",
+});
+```
 
 ## AI Integration
 
-| File | Assistant | Purpose |
-|------|-----------|---------|
-| `CLAUDE.md` | Claude Code / Opus 4.6 | Project context and conventions |
-| `.claude/settings.json` | Claude Code | Allowed/denied commands |
-| `.github/copilot-instructions.md` | GitHub Copilot | Coding conventions |
-| `.cursorrules` | Cursor AI | Coding rules |
-| `.agents/workflows/` | Antigravity | `/deploy`, `/dev`, `/push` workflows |
+| File                              | Assistant              | Purpose                              |
+| --------------------------------- | ---------------------- | ------------------------------------ |
+| `CLAUDE.md`                       | Claude Code / Opus 4.6 | Project context and conventions      |
+| `.claude/settings.json`           | Claude Code            | Allowed/denied commands              |
+| `.github/copilot-instructions.md` | GitHub Copilot         | Coding conventions                   |
+| `.cursorrules`                    | Cursor AI              | Coding rules                         |
+| `.agents/workflows/`              | Antigravity            | `/deploy`, `/dev`, `/push` workflows |
 
 ## Documentation
 

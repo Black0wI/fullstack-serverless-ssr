@@ -32,6 +32,7 @@ Décrivez le contexte métier et technique qui motive cette spécification. Quel
 **En tant que** [rôle], **je veux** [action], **afin de** [bénéfice].
 
 **Critères d'acceptation :**
+
 - [ ] Critère 1
 - [ ] Critère 2
 
@@ -40,6 +41,7 @@ Décrivez le contexte métier et technique qui motive cette spécification. Quel
 **En tant que** [rôle], **je veux** [action], **afin de** [bénéfice].
 
 **Critères d'acceptation :**
+
 - [ ] Critère 1
 - [ ] Critère 2
 
@@ -59,10 +61,10 @@ Décrivez les composants impliqués et leurs interactions.
 
 ### Nouveau(x) Composant(s)
 
-| Fichier | Type | Responsabilité |
-|---------|------|----------------|
-| `src/components/Example.tsx` | Component | Description |
-| `src/app/example/page.tsx` | Page | Description |
+| Fichier                      | Type      | Responsabilité |
+| ---------------------------- | --------- | -------------- |
+| `src/components/Example.tsx` | Component | Description    |
+| `src/app/example/page.tsx`   | Page      | Description    |
 
 ### Modèle de Données
 
@@ -75,10 +77,10 @@ interface Example {
 
 ### API / Routes
 
-| Méthode | Route | Description |
-|---------|-------|-------------|
-| `GET` | `/api/example` | Liste des éléments |
-| `POST` | `/api/example` | Création |
+| Méthode | Route          | Description        |
+| ------- | -------------- | ------------------ |
+| `GET`   | `/api/example` | Liste des éléments |
+| `POST`  | `/api/example` | Création           |
 
 ---
 
@@ -91,26 +93,29 @@ interface Example {
 
 ### États d'interface
 
-| État | Comportement |
-|------|-------------|
+| État       | Comportement       |
+| ---------- | ------------------ |
 | Chargement | Skeleton / spinner |
-| Vide | Message + CTA |
-| Erreur | Toast / bannière |
-| Succès | Confirmation |
+| Vide       | Message + CTA      |
+| Erreur     | Toast / bannière   |
+| Succès     | Confirmation       |
 
 ---
 
 ## Plan d'Implémentation
 
 ### Phase 1 — Fondation
+
 - [ ] Tâche 1
 - [ ] Tâche 2
 
 ### Phase 2 — Intégration
+
 - [ ] Tâche 3
 - [ ] Tâche 4
 
 ### Phase 3 — Polish
+
 - [ ] Tâche 5
 
 ---
@@ -118,10 +123,12 @@ interface Example {
 ## Tests & Validation
 
 ### Tests Automatisés
+
 - [ ] Unit tests pour la logique métier
 - [ ] Tests de composants (rendering, interactions)
 
 ### Vérification Manuelle
+
 - [ ] Responsive (mobile, tablet, desktop)
 - [ ] Dark theme
 - [ ] Accessibilité (clavier, screen reader)
@@ -131,12 +138,12 @@ interface Example {
 
 ## Risques & Dépendances
 
-| Risque | Impact | Mitigation |
-|--------|--------|------------|
-| Risque 1 | `high` | Plan B |
+| Risque   | Impact | Mitigation |
+| -------- | ------ | ---------- |
+| Risque 1 | `high` | Plan B     |
 
-| Dépendance | Statut |
-|------------|--------|
+| Dépendance   | Statut                  |
+| ------------ | ----------------------- |
 | Dépendance 1 | ✅ Prêt / ⏳ En attente |
 
 ---

@@ -1,6 +1,6 @@
 # ============================================
-# DEPLOY — Build + Terraform Apply + S3 Sync + CloudFront + Cloudflare DNS
-# Triggered on push to main
+# DEPLOY — SST v3 deployment to production
+# Triggered on push to main branch
 # ============================================
 
 name: Deploy
@@ -8,15 +8,11 @@ name: Deploy
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
-  group: deploy-${{ github.ref }}
+  group: deploy-production
   cancel-in-progress: false
-
-env:
-  NODE_VERSION: "22"
-  TERRAFORM_VERSION: "1.10"
-  AWS_REGION: "eu-west-3"
 
 permissions:
   id-token: write
@@ -24,82 +20,33 @@ permissions:
 
 jobs:
   deploy:
-    name: Build & Deploy
+    name: Deploy to Production
     runs-on: ubuntu-latest
     environment: production
 
     steps:
-      # ── Checkout ──
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ── Node.js ──
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: "22"
           cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build (static export)
-        run: npm run build
-
-      # ── AWS Credentials ──
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: eu-west-3
 
-      # ── Terraform ──
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TERRAFORM_VERSION }}
-          terraform_wrapper: false
+      - name: Deploy with SST
+        run: npx sst deploy --stage production
 
-      - name: Terraform Init
-        working-directory: infra
-        run: terraform init
-
-      - name: Terraform Apply
-        working-directory: infra
-        run: terraform apply -auto-approve
-
-      # ── Deploy to S3 ──
-      - name: Get Terraform outputs
-        id: tf
-        working-directory: infra
-        run: |
-          echo "bucket=$(terraform output -raw s3_bucket_name)" >> $GITHUB_OUTPUT
-          echo "distribution_id=$(terraform output -raw cloudfront_distribution_id)" >> $GITHUB_OUTPUT
-          echo "cf_domain=$(terraform output -raw cloudfront_domain_name)" >> $GITHUB_OUTPUT
-
-      - name: Sync to S3
-        run: |
-          aws s3 sync out/ s3://${{ steps.tf.outputs.bucket }} \
-            --delete \
-            --cache-control "public, max-age=31536000, immutable" \
-            --exclude "*.html" \
-            --exclude "*.json"
-
-          aws s3 sync out/ s3://${{ steps.tf.outputs.bucket }} \
-            --delete \
-            --cache-control "public, max-age=0, must-revalidate" \
-            --include "*.html" \
-            --include "*.json" \
-            --exclude "_next/*"
-
-      # ── CloudFront Invalidation ──
-      - name: Invalidate CloudFront cache
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ steps.tf.outputs.distribution_id }} \
-            --paths "/*"
-
-      # ── Cloudflare DNS (CNAME → CloudFront) ──
+      # ── Cloudflare DNS (conditionnel) ──
       - name: Update Cloudflare CNAME
         if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
         env:
@@ -107,16 +54,21 @@ jobs:
           CF_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           CF_RECORD_NAME: ${{ vars.CLOUDFLARE_RECORD_NAME }}
         run: |
-          CF_DOMAIN="${{ steps.tf.outputs.cf_domain }}"
-          echo "🌐 Updating Cloudflare CNAME: ${CF_RECORD_NAME} → ${CF_DOMAIN}"
+          # Get the CloudFront domain from SST outputs
+          DISTRIBUTION_DOMAIN=$(npx sst output --stage production url 2>/dev/null | sed 's|https://||;s|/||g' || echo "")
 
-          # Check if record already exists
+          if [ -z "$DISTRIBUTION_DOMAIN" ]; then
+            echo "⚠️ Could not get SST output URL, skipping DNS update"
+            exit 0
+          fi
+
+          # Check if record exists
           EXISTING=$(curl -s -X GET \
             "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/dns_records?type=CNAME&name=${CF_RECORD_NAME}" \
             -H "Authorization: Bearer ${CF_API_TOKEN}" \
             -H "Content-Type: application/json")
 
-          RECORD_ID=$(echo "$EXISTING" | jq -r '.result[0].id // empty')
+          RECORD_ID=$(echo $EXISTING | jq -r '.result[0].id // empty')
 
           if [ -n "$RECORD_ID" ]; then
             # Update existing record
@@ -124,17 +76,14 @@ jobs:
               "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/dns_records/${RECORD_ID}" \
               -H "Authorization: Bearer ${CF_API_TOKEN}" \
               -H "Content-Type: application/json" \
-              --data "{\"type\":\"CNAME\",\"name\":\"${CF_RECORD_NAME}\",\"content\":\"${CF_DOMAIN}\",\"proxied\":true,\"ttl\":1}" \
-              | jq '.success'
-            echo "✅ CNAME updated"
+              --data "{\"type\":\"CNAME\",\"name\":\"${CF_RECORD_NAME}\",\"content\":\"${DISTRIBUTION_DOMAIN}\",\"proxied\":true}"
+            echo "✅ Updated CNAME: ${CF_RECORD_NAME} → ${DISTRIBUTION_DOMAIN}"
           else
             # Create new record
             curl -s -X POST \
               "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/dns_records" \
               -H "Authorization: Bearer ${CF_API_TOKEN}" \
               -H "Content-Type: application/json" \
-              --data "{\"type\":\"CNAME\",\"name\":\"${CF_RECORD_NAME}\",\"content\":\"${CF_DOMAIN}\",\"proxied\":true,\"ttl\":1}" \
-              | jq '.success'
-            echo "✅ CNAME created"
+              --data "{\"type\":\"CNAME\",\"name\":\"${CF_RECORD_NAME}\",\"content\":\"${DISTRIBUTION_DOMAIN}\",\"proxied\":true}"
+            echo "✅ Created CNAME: ${CF_RECORD_NAME} → ${DISTRIBUTION_DOMAIN}"
           fi
-

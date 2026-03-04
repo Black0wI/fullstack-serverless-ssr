@@ -14,7 +14,7 @@
 5. [Cycle de développement](#5-cycle-de-développement)
 6. [Structure du projet](#6-structure-du-projet)
 7. [Design system & conventions CSS](#7-design-system--conventions-css)
-8. [Infrastructure as Code (Terraform)](#8-infrastructure-as-code-terraform)
+8. [Infrastructure as Code (SST v3)](#8-infrastructure-as-code-sst-v3)
 9. [CI/CD Pipeline](#9-cicd-pipeline)
 10. [Sécurité & RGPD](#10-sécurité--rgpd)
 11. [Outils tiers (Python)](#11-outils-tiers-python)
@@ -32,19 +32,20 @@
 
 ## 1. Vue d'ensemble
 
-Tech Portal est une application **Next.js 15** (App Router, TypeScript) exportée en site statique et distribuée mondialement via **AWS CloudFront**. L'infrastructure est gérée en **Terraform**, le CI/CD par **GitHub Actions**.
+Tech Portal est une application **Next.js 15** full-stack (App Router, TypeScript) déployée mondialement via **AWS CloudFront + Lambda** grâce à **SST v3** (OpenNext). Le CI/CD est géré par **GitHub Actions**.
 
-**Principe clé** : le site est un export statique (`output: 'export'`). Il n'y a **aucun serveur**, aucune API route, aucun SSR. Le contenu est servi directement depuis un CDN.
+**Principe clé** : l'application supporte le SSR, les API Routes, les Server Actions et les pages statiques. SST utilise OpenNext pour déployer Next.js sur AWS sans vendor lock-in.
 
 ### Pourquoi ce choix ?
 
-| Critère        | Bénéfice                                        |
-| -------------- | ----------------------------------------------- |
-| Performance    | 0 cold start, fichiers servis depuis des edge locations mondiales |
-| Coût           | ~1-3 $/mois (S3 + CloudFront) vs 20+ $/mois sur Vercel |
-| Sécurité       | Bucket S3 privé, accès OAC uniquement, CSP stricte |
-| RGPD           | Données hébergées en `eu-west-3` (Paris, France) |
-| Contrôle       | Infrastructure versionnée (Terraform), pas de vendor lock-in |
+| Critère     | Bénéfice                                                       |
+| ----------- | -------------------------------------------------------------- |
+| Full-Stack  | SSR, API Routes, Server Actions, ISR — tout Next.js disponible |
+| Performance | CloudFront edge + Lambda@Edge, cache intelligent               |
+| Coût        | ~1-5 $/mois (pay-per-use) vs 20+ $/mois sur Vercel             |
+| Sécurité    | Secrets serveur protégés, CSP stricte                          |
+| RGPD        | Données hébergées en `eu-west-3` (Paris, France)               |
+| Contrôle    | Infrastructure versionnée (SST/Pulumi), pas de vendor lock-in  |
 
 ---
 
@@ -60,10 +61,10 @@ Tech Portal est une application **Next.js 15** (App Router, TypeScript) exporté
                         │     GitHub Actions CI/CD     │
                         │                              │
                         │  ┌─────────────────────────┐ │
-                        │  │ 1. npm ci + build        │ │
-                        │  │ 2. terraform apply       │ │
-                        │  │ 3. aws s3 sync           │ │
-                        │  │ 4. cloudfront invalidate │ │
+                        │  │ 1. npm ci                │ │
+                        │  │ 2. npx sst deploy        │ │
+                        │  │    (build + deploy)      │ │
+                        │  │ 3. cloudflare DNS update │ │
                         │  └─────────────────────────┘ │
                         └──────────┬──────────────────┘
                                    │
@@ -86,13 +87,13 @@ Tech Portal est une application **Next.js 15** (App Router, TypeScript) exporté
 
 ### Composants AWS
 
-| Service | Rôle | Région |
-|---------|------|--------|
-| **S3** | Stockage des fichiers statiques | `eu-west-3` (Paris) |
-| **CloudFront** | CDN mondial, cache edge | Global (config `eu-west-3`) |
-| **CloudFront Functions** | URL rewriting + Headers sécurité | Edge locations |
-| **ACM** | Certificat SSL (custom domain) | `us-east-1` ⚠️ requis par CloudFront |
-| **OAC** | Contrôle d'accès S3 → CloudFront | `eu-west-3` |
+| Service                  | Rôle                             | Région                               |
+| ------------------------ | -------------------------------- | ------------------------------------ |
+| **S3**                   | Stockage des fichiers statiques  | `eu-west-3` (Paris)                  |
+| **CloudFront**           | CDN mondial, cache edge          | Global (config `eu-west-3`)          |
+| **CloudFront Functions** | URL rewriting + Headers sécurité | Edge locations                       |
+| **ACM**                  | Certificat SSL (custom domain)   | `us-east-1` ⚠️ requis par CloudFront |
+| **OAC**                  | Contrôle d'accès S3 → CloudFront | `eu-west-3`                          |
 
 > ⚠️ **Pourquoi `us-east-1` pour ACM ?** C'est une contrainte imposée par AWS : les certificats SSL associés à CloudFront doivent être créés en `us-east-1`, même si le bucket S3 est en `eu-west-3`. Cela ne compromet pas la conformité RGPD car seul le certificat (métadonnée) est stocké là, pas les données utilisateurs.
 
@@ -119,24 +120,23 @@ Utilisateur → CloudFront Edge → [url-rewrite.js] → S3 (eu-west-3) → Rép
 
 ### Obligatoire
 
-| Outil | Version | Installation |
-|-------|---------|-------------|
-| Node.js | ≥ 22 | `brew install node` ou [nvm](https://github.com/nvm-sh/nvm) |
-| npm | ≥ 10 | Inclus avec Node.js |
-| Git | ≥ 2.30 | `brew install git` |
+| Outil   | Version | Installation                                                |
+| ------- | ------- | ----------------------------------------------------------- |
+| Node.js | ≥ 22    | `brew install node` ou [nvm](https://github.com/nvm-sh/nvm) |
+| npm     | ≥ 10    | Inclus avec Node.js                                         |
+| Git     | ≥ 2.30  | `brew install git`                                          |
 
 ### Pour l'infrastructure (optionnel en local)
 
-| Outil | Version | Installation |
-|-------|---------|-------------|
-| Terraform | ≥ 1.5 | `brew install terraform` |
-| AWS CLI | ≥ 2 | `brew install awscli` |
+| Outil   | Version | Installation          |
+| ------- | ------- | --------------------- |
+| AWS CLI | ≥ 2     | `brew install awscli` |
 
 ### Pour les outils Python (optionnel)
 
-| Outil | Version | Installation |
-|-------|---------|-------------|
-| Python | ≥ 3.11 | `brew install python@3.11` |
+| Outil  | Version | Installation               |
+| ------ | ------- | -------------------------- |
+| Python | ≥ 3.11  | `brew install python@3.11` |
 
 ---
 
@@ -160,11 +160,14 @@ make dev
 ```bash
 make help           # Affiche toutes les commandes
 make dev            # Serveur de dev (Turbopack, port 4000)
-make build          # Build statique → out/
+make build          # Build l'application
 make check          # Lint + type-check + format + build
+make test           # Tests unitaires (Vitest)
 make push           # Push ai-agent + auto-PR vers main
 make force-deploy   # ⚠️ URGENCE: push direct sur main (bypass PR)
-make deploy         # Build + Terraform + S3 sync + CloudFront invalidation
+make deploy         # Déployer avec SST (OpenNext)
+make sst-dev        # SST dev mode (Lambda live)
+make sst-diff       # Prévisualiser les changements infra
 make clean          # Nettoyer les artefacts de build
 ```
 
@@ -186,13 +189,13 @@ make clean          # Nettoyer les artefacts de build
     └── refactor/*        ← Refontes techniques (PR vers main)
 ```
 
-| Branche | Rôle | Déclencheur de déploiement |
-|---------|------|----------------------------|
-| `main` | **Production** — branche protégée, requiert une PR approuvée | Push → deploy automatique |
-| `ai-agent` | **Branche IA** — travail de l'agent Claude | Push → auto-PR vers `main` |
-| `feature/*` | Nouvelles features (développeurs humains) | PR manuelle vers `main` |
-| `hotfix/*` | Fix critique en urgence | PR manuelle vers `main` |
-| `refactor/*` | Refactoring technique | PR manuelle vers `main` |
+| Branche      | Rôle                                                         | Déclencheur de déploiement |
+| ------------ | ------------------------------------------------------------ | -------------------------- |
+| `main`       | **Production** — branche protégée, requiert une PR approuvée | Push → deploy automatique  |
+| `ai-agent`   | **Branche IA** — travail de l'agent Claude                   | Push → auto-PR vers `main` |
+| `feature/*`  | Nouvelles features (développeurs humains)                    | PR manuelle vers `main`    |
+| `hotfix/*`   | Fix critique en urgence                                      | PR manuelle vers `main`    |
+| `refactor/*` | Refactoring technique                                        | PR manuelle vers `main`    |
 
 ### Workflow IA (branche `ai-agent`)
 
@@ -218,7 +221,7 @@ make clean          # Nettoyer les artefacts de build
       │   └── SBOM
       │
       ├── Preview (automatique)
-      │   └── Terraform Plan (commentaire PR)
+      │   └── SST Diff (commentaire PR)
       │
       ├── 👤 REVIEW HUMAINE OBLIGATOIRE
       │   └── Le développeur approuve ou demande des changements
@@ -227,9 +230,9 @@ make clean          # Nettoyer les artefacts de build
    Merge dans main (par un humain)
       │
       └── Deploy (automatique)
-          ├── Build + Terraform Apply
-          ├── S3 Sync (cache intelligent)
-          └── CloudFront Invalidation
+          ├── SST Deploy (build + OpenNext)
+          ├── CloudFront + Lambda@Edge
+          └── Cloudflare DNS update
 ```
 
 ### Workflow développeur humain
@@ -314,17 +317,17 @@ Pour activer la protection (recommandé) :
 
 Format : `type: description courte`
 
-| Type | Usage |
-|------|-------|
-| `feat` | Nouvelle fonctionnalité |
-| `fix` | Correction de bug |
-| `docs` | Documentation |
-| `style` | Formatage (pas de changement de logique) |
-| `refactor` | Restructuration du code |
-| `perf` | Amélioration de performance |
-| `test` | Ajout ou modification de tests |
-| `chore` | Maintenance (deps, config) |
-| `infra` | Changement d'infrastructure (Terraform) |
+| Type       | Usage                                    |
+| ---------- | ---------------------------------------- |
+| `feat`     | Nouvelle fonctionnalité                  |
+| `fix`      | Correction de bug                        |
+| `docs`     | Documentation                            |
+| `style`    | Formatage (pas de changement de logique) |
+| `refactor` | Restructuration du code                  |
+| `perf`     | Amélioration de performance              |
+| `test`     | Ajout ou modification de tests           |
+| `chore`    | Maintenance (deps, config)               |
+| `infra`    | Changement d'infrastructure (SST)        |
 
 ---
 
@@ -358,27 +361,21 @@ tech-portal/
 ├── e2e/                              # ── TESTS E2E ──
 │   └── landing.spec.ts               # Tests Playwright
 │
-├── infra/                            # ── INFRASTRUCTURE ──
-│   ├── main.tf                       # Ressources AWS
-│   ├── variables.tf                  # Variables configurables
-│   ├── outputs.tf                    # Sorties (URL, IDs)
-│   ├── backend.tf                    # State remote (commenté)
-│   └── cloudfront-functions/         # Code edge
-│       ├── url-rewrite.js
-│       └── security-headers.js
+│
+├── sst.config.ts                         # Infrastructure SST v3
 │
 ├── .github/                          # ── CI/CD ──
 │   ├── workflows/
 │   │   ├── ci.yml                    # Qualité + E2E + Lighthouse
-│   │   ├── deploy.yml                # Deploy + Cloudflare DNS
-│   │   ├── preview.yml               # Terraform plan sur PR
+│   │   ├── deploy.yml                # SST deploy + Cloudflare DNS
+│   │   ├── preview.yml               # SST diff sur PR
 │   │   ├── auto-pr.yml               # ai-agent → main auto-PR
 │   │   └── release.yml               # GitHub Release sur tag
 │   ├── dependabot.yml                # Mises à jour auto
 │   └── copilot-instructions.md       # Contexte GitHub Copilot
 │
 ├── .devcontainer/                    # ── DEV CONTAINER ──
-│   └── devcontainer.json             # Node 22 + AWS + Terraform + Python
+│   └── devcontainer.json             # Node 22 + AWS + Python
 │
 ├── docs/                             # ── DOCUMENTATION ──
 │   ├── specs/                        # Spécifications fonctionnelles
@@ -418,17 +415,17 @@ tech-portal/
 
 ### Où ajouter du code ?
 
-| Tu veux... | Fichier / dossier |
-|------------|-------------------|
-| Ajouter une page | `src/app/ma-page/page.tsx` |
-| Créer un composant | `src/components/MonComposant.tsx` |
-| Modifier les styles | `src/app/globals.css` (tokens) ou CSS module |
+| Tu veux...               | Fichier / dossier                                |
+| ------------------------ | ------------------------------------------------ |
+| Ajouter une page         | `src/app/ma-page/page.tsx`                       |
+| Créer un composant       | `src/components/MonComposant.tsx`                |
+| Modifier les styles      | `src/app/globals.css` (tokens) ou CSS module     |
 | Ajouter un test unitaire | `src/__tests__/components/MonComposant.test.tsx` |
-| Ajouter un test E2E | `e2e/mon-test.spec.ts` |
-| Modifier l'infra AWS | `infra/main.tf` |
-| Rédiger une spec | `docs/specs/SPEC-XXX-titre.md` |
-| Créer un outil Python | `tools/mon-outil/tool.py` |
-| Documenter une décision | `docs/architecture/decisions/XXXX-titre.md` |
+| Ajouter un test E2E      | `e2e/mon-test.spec.ts`                           |
+| Modifier l'infra AWS     | `sst.config.ts`                                  |
+| Rédiger une spec         | `docs/specs/SPEC-XXX-titre.md`                   |
+| Créer un outil Python    | `tools/mon-outil/tool.py`                        |
+| Documenter une décision  | `docs/architecture/decisions/XXXX-titre.md`      |
 
 ---
 
@@ -483,63 +480,54 @@ var(--shadow-glow)    /* Halo indigo */
 
 ### Conventions TypeScript / React
 
-| Règle | Exemple |
-|-------|---------|
-| Exports nommés (pas de `default`) | `export function Header() {}` |
-| Props typées | `interface HeaderProps { title: string }` |
-| Path aliases | `import { Header } from "@/components/Header"` |
-| Server Components par défaut | Ajouter `"use client"` uniquement si nécessaire |
-| `const` > `let`, jamais `var` | `const items = []` |
-| TypeScript strict, pas de `any` | Utiliser `unknown` si nécessaire |
+| Règle                             | Exemple                                         |
+| --------------------------------- | ----------------------------------------------- |
+| Exports nommés (pas de `default`) | `export function Header() {}`                   |
+| Props typées                      | `interface HeaderProps { title: string }`       |
+| Path aliases                      | `import { Header } from "@/components/Header"`  |
+| Server Components par défaut      | Ajouter `"use client"` uniquement si nécessaire |
+| `const` > `let`, jamais `var`     | `const items = []`                              |
+| TypeScript strict, pas de `any`   | Utiliser `unknown` si nécessaire                |
 
 ---
 
-## 8. Infrastructure as Code (Terraform)
+## 8. Infrastructure as Code (SST v3)
 
-### Fichiers
+### Configuration
 
-| Fichier | Contenu |
-|---------|---------|
-| `main.tf` | Toutes les ressources AWS (S3, CloudFront, OAC, Functions) |
-| `variables.tf` | Inputs configurables avec valeurs par défaut |
-| `outputs.tf` | Valeurs de sortie (URL CloudFront, nom du bucket) |
-| `backend.tf` | State remote S3 (commenté, à activer manuellement) |
+Toute l'infrastructure est définie dans un seul fichier : `sst.config.ts`
+
+SST gère automatiquement : S3, CloudFront, Lambda@Edge, ACM, et toutes les permissions IAM.
 
 ### Premier déploiement
 
 ```bash
-# 1. Configurer les variables
-cp infra/terraform.tfvars.example infra/terraform.tfvars
-# Éditer terraform.tfvars avec tes valeurs
+# 1. Configurer AWS
+aws configure  # ou utiliser des variables d'env
 
-# 2. Initialiser Terraform
-cd infra && terraform init
-
-# 3. Prévisualiser
-terraform plan
-
-# 4. Appliquer
-terraform apply
+# 2. Déployer
+make deploy
+# ou: npx sst deploy --stage production
 ```
 
 ### Ajouter un domaine custom
 
-1. Créer un certificat ACM dans `us-east-1` (console AWS ou CLI)
-2. Renseigner dans `terraform.tfvars` :
-   ```hcl
-   domain_name         = "portal.example.com"
-   acm_certificate_arn = "arn:aws:acm:us-east-1:ACCOUNT:certificate/ID"
-   ```
-3. `terraform apply`
-4. Créer un CNAME DNS pointant vers le domaine CloudFront
+Décommenter la propriété `domain` dans `sst.config.ts` :
 
-### State Terraform
+```ts
+new sst.aws.Nextjs("Web", {
+  domain: "portal.example.com",
+});
+```
 
-Par défaut, le state est **local** (fichier `terraform.tfstate`). Pour le travail en équipe, activer le backend S3 :
+### Commandes SST
 
-1. Créer le bucket S3 + table DynamoDB pour le locking
-2. Décommenter le bloc dans `infra/backend.tf`
-3. `terraform init -migrate-state`
+| Commande                            | Description                   |
+| ----------------------------------- | ----------------------------- |
+| `npx sst dev`                       | Mode dev avec Lambda live     |
+| `npx sst deploy --stage production` | Déployer en production        |
+| `npx sst diff --stage production`   | Prévisualiser les changements |
+| `npx sst remove --stage production` | Supprimer l'infrastructure    |
 
 ---
 
@@ -569,12 +557,12 @@ Par défaut, le state est **local** (fichier `terraform.tfstate`). Pour le trava
 
 ### Secrets et variables GitHub nécessaires
 
-| Type | Nom | Description |
-|------|-----|-------------|
-| **Secret** | `AWS_ROLE_ARN` | ARN du rôle IAM pour l'authentification OIDC |
-| **Secret** | `CLOUDFLARE_API_TOKEN` | Token API Cloudflare (scope DNS Edit) |
-| **Secret** | `CLOUDFLARE_ZONE_ID` | ID de la zone Cloudflare |
-| **Variable** | `CLOUDFLARE_RECORD_NAME` | Nom du CNAME (ex: `portal.example.com`) |
+| Type         | Nom                      | Description                                  |
+| ------------ | ------------------------ | -------------------------------------------- |
+| **Secret**   | `AWS_ROLE_ARN`           | ARN du rôle IAM pour l'authentification OIDC |
+| **Secret**   | `CLOUDFLARE_API_TOKEN`   | Token API Cloudflare (scope DNS Edit)        |
+| **Secret**   | `CLOUDFLARE_ZONE_ID`     | ID de la zone Cloudflare                     |
+| **Variable** | `CLOUDFLARE_RECORD_NAME` | Nom du CNAME (ex: `portal.example.com`)      |
 
 > **Note** : l'étape Cloudflare est **conditionnelle** — elle ne s'exécute que si `CLOUDFLARE_API_TOKEN` est configuré. Sans ce secret, le déploiement fonctionne normalement sans mise à jour DNS.
 
@@ -590,10 +578,10 @@ Par défaut, le state est **local** (fichier `terraform.tfstate`). Pour le trava
 
 Le déploiement utilise deux passes de synchronisation :
 
-| Type de fichier | Cache-Control | Raison |
-|-----------------|---------------|--------|
-| `_next/static/*`, CSS, JS, images | `max-age=31536000, immutable` | Contenu hashé, ne change jamais |
-| `*.html`, `*.json` | `max-age=0, must-revalidate` | Contenu dynamique, toujours frais |
+| Type de fichier                   | Cache-Control                 | Raison                            |
+| --------------------------------- | ----------------------------- | --------------------------------- |
+| `_next/static/*`, CSS, JS, images | `max-age=31536000, immutable` | Contenu hashé, ne change jamais   |
+| `*.html`, `*.json`                | `max-age=0, must-revalidate`  | Contenu dynamique, toujours frais |
 
 ---
 
@@ -610,14 +598,14 @@ Le déploiement utilise deux passes de synchronisation :
 
 Appliqués automatiquement par la CloudFront Function `security-headers.js` :
 
-| Header | Valeur | Protection |
-|--------|--------|------------|
-| `Content-Security-Policy` | Restrictive (self + fonts Google) | XSS, injection |
-| `Strict-Transport-Security` | 2 ans, includeSubDomains, preload | Downgrade HTTPS |
-| `X-Frame-Options` | DENY | Clickjacking |
-| `X-Content-Type-Options` | nosniff | MIME sniffing |
-| `Permissions-Policy` | Caméra, micro, géoloc désactivés | Accès API sensibles |
-| `Referrer-Policy` | strict-origin-when-cross-origin | Fuite d'URL |
+| Header                      | Valeur                            | Protection          |
+| --------------------------- | --------------------------------- | ------------------- |
+| `Content-Security-Policy`   | Restrictive (self + fonts Google) | XSS, injection      |
+| `Strict-Transport-Security` | 2 ans, includeSubDomains, preload | Downgrade HTTPS     |
+| `X-Frame-Options`           | DENY                              | Clickjacking        |
+| `X-Content-Type-Options`    | nosniff                           | MIME sniffing       |
+| `Permissions-Policy`        | Caméra, micro, géoloc désactivés  | Accès API sensibles |
+| `Referrer-Policy`           | strict-origin-when-cross-origin   | Fuite d'URL         |
 
 ### Bonnes pratiques
 
@@ -698,6 +686,7 @@ src/__tests__/
 ```
 
 Pour ajouter un test :
+
 ```bash
 touch src/__tests__/components/MonComposant.test.tsx
 ```
@@ -717,14 +706,14 @@ Les tests E2E sont dans `e2e/` et testent le build statique servi localement.
 
 Le site est installable et fonctionne hors connexion grâce à :
 
-| Fichier | Rôle |
-|---------|------|
-| `public/manifest.json` | Métadonnées PWA (nom, couleurs, icônes) |
-| `public/sw.js` | Service worker (cache-first pour statiques, network-first pour HTML) |
-| `public/offline.html` | Page de fallback hors connexion |
-| `public/icons/icon-192.png` | Icône PWA 192x192 |
-| `public/icons/icon-512.png` | Icône PWA 512x512 |
-| `ServiceWorkerRegistration.tsx` | Composant client qui enregistre le SW |
+| Fichier                         | Rôle                                                                 |
+| ------------------------------- | -------------------------------------------------------------------- |
+| `public/manifest.json`          | Métadonnées PWA (nom, couleurs, icônes)                              |
+| `public/sw.js`                  | Service worker (cache-first pour statiques, network-first pour HTML) |
+| `public/offline.html`           | Page de fallback hors connexion                                      |
+| `public/icons/icon-192.png`     | Icône PWA 192x192                                                    |
+| `public/icons/icon-512.png`     | Icône PWA 512x512                                                    |
+| `ServiceWorkerRegistration.tsx` | Composant client qui enregistre le SW                                |
 
 Le service worker ne s'active qu'en **production**. En dev, la page est servie normalement.
 
@@ -748,7 +737,7 @@ Cela permet de détecter les dépendances lourdes et optimiser la taille du buil
 Le projet inclut un `.devcontainer/devcontainer.json` pour VS Code / GitHub Codespaces :
 
 - **Image** : Node 22 LTS
-- **Outils inclus** : AWS CLI, Terraform, Python 3.12, GitHub CLI
+- **Outils inclus** : AWS CLI, Python 3.12, GitHub CLI
 - **Extensions** : ESLint, Prettier, Playwright, Vitest Explorer, Copilot
 - **Setup automatique** : `npm install` exécuté au démarrage
 
@@ -784,13 +773,13 @@ Le workflow `release.yml` crée automatiquement une **GitHub Release** avec des 
 
 Le projet est configuré pour fonctionner avec les assistants IA de coding :
 
-| Fichier | Assistant | Contenu |
-|---------|-----------|---------|
-| `CLAUDE.md` | Claude Code / Opus 4.6 | Contexte complet du projet |
-| `.claude/settings.json` | Claude Code | Commandes autorisées/interdites |
-| `.github/copilot-instructions.md` | GitHub Copilot | Conventions et contraintes |
-| `.cursorrules` | Cursor AI | Règles de coding |
-| `.agents/workflows/` | Antigravity | Workflows `/deploy`, `/dev`, `/push` |
+| Fichier                           | Assistant              | Contenu                              |
+| --------------------------------- | ---------------------- | ------------------------------------ |
+| `CLAUDE.md`                       | Claude Code / Opus 4.6 | Contexte complet du projet           |
+| `.claude/settings.json`           | Claude Code            | Commandes autorisées/interdites      |
+| `.github/copilot-instructions.md` | GitHub Copilot         | Conventions et contraintes           |
+| `.cursorrules`                    | Cursor AI              | Règles de coding                     |
+| `.agents/workflows/`              | Antigravity            | Workflows `/deploy`, `/dev`, `/push` |
 
 ---
 
@@ -813,12 +802,12 @@ rm -f next-env.d.ts
 npm run build
 ```
 
-### Terraform refuse de s'initialiser
+### SST ne se déploie pas
 
 ```bash
-cd infra
-rm -rf .terraform .terraform.lock.hcl
-terraform init
+# Nettoyer le cache SST
+rm -rf .sst/ .open-next/
+npx sst deploy --stage production
 ```
 
 ### Le pre-commit hook bloque mon commit
@@ -834,11 +823,10 @@ git commit --no-verify -m "wip: bypass hooks"
 ### CloudFront sert du contenu périmé
 
 ```bash
-# Forcer l'invalidation
-DIST_ID=$(cd infra && terraform output -raw cloudfront_distribution_id)
-aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/*"
+# Redéployer (SST gère l'invalidation automatiquement)
+make deploy
 ```
 
 ---
 
-*Pour toute question, ouvrir une issue sur GitHub ou contacter l'équipe.*
+_Pour toute question, ouvrir une issue sur GitHub ou contacter l'équipe._
