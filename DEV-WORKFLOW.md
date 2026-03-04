@@ -144,7 +144,7 @@ Utilisateur → CloudFront Edge → [url-rewrite.js] → S3 (eu-west-3) → Rép
 
 ```bash
 # 1. Cloner le repository
-git clone https://github.com/itakademy/tech-portal.git
+git clone https://github.com/Black0wI/nextjs-static-edge-template.git
 cd tech-portal
 
 # 2. Setup complet (installe les deps + copie .env)

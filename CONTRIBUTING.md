@@ -5,7 +5,7 @@ Thank you for your interest in contributing! This document provides guidelines f
 ## Development Setup
 
 ```bash
-git clone https://github.com/itakademy/tech-portal.git
+git clone https://github.com/Black0wI/nextjs-static-edge-template.git
 cd tech-portal
 make setup
 make dev

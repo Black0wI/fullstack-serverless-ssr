@@ -70,7 +70,7 @@ push: ## Push to ai-agent branch (triggers auto-PR to main)
 	@git push origin $(BRANCH_AI)
 	@echo ""
 	@echo "✅ Push effectué. Une PR sera automatiquement créée/mise à jour vers $(BRANCH_PROD)."
-	@echo "   → https://github.com/itakademy/tech-portal/pulls"
+	@echo "   → https://github.com/Black0wI/nextjs-static-edge-template/pulls"
 
 force-deploy: ## ⚠️  URGENCE: Push direct sur main (bypass PR)
 	@echo ""

@@ -1,7 +1,7 @@
 # Tech Portal — Next.js Full-Stack on AWS
 
-[![CI](https://github.com/itakademy/tech-portal/actions/workflows/ci.yml/badge.svg)](https://github.com/itakademy/tech-portal/actions/workflows/ci.yml)
-[![Deploy](https://github.com/itakademy/tech-portal/actions/workflows/deploy.yml/badge.svg)](https://github.com/itakademy/tech-portal/actions/workflows/deploy.yml)
+[![CI](https://github.com/Black0wI/nextjs-static-edge-template/actions/workflows/ci.yml/badge.svg)](https://github.com/Black0wI/nextjs-static-edge-template/actions/workflows/ci.yml)
+[![Deploy](https://github.com/Black0wI/nextjs-static-edge-template/actions/workflows/deploy.yml/badge.svg)](https://github.com/Black0wI/nextjs-static-edge-template/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 > 🚀 Production-ready Next.js 15 full-stack boilerplate deployed on AWS with SST v3 (OpenNext), GitHub Actions CI/CD, full test suite, PWA support, and Claude AI integration.
@@ -29,7 +29,7 @@
 
 ```bash
 # Clone and setup
-git clone https://github.com/itakademy/tech-portal.git
+git clone https://github.com/Black0wI/nextjs-static-edge-template.git
 cd tech-portal
 make setup
 
