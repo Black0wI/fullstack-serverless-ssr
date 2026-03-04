@@ -8,12 +8,18 @@
   "scripts": {
     "dev": "next dev --turbopack -p 4000",
     "build": "next build",
+    "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "analyze": "ANALYZE=true next build",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\"",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "prepare": "husky"
   },
   "dependencies": {
@@ -23,17 +29,25 @@
   },
   "devDependencies": {
     "@lhci/cli": "^0.15.1",
+    "@next/bundle-analyzer": "^16.1.6",
     "@playwright/test": "^1.58.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.1.4",
+    "conventional-changelog-cli": "^5.0.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.2.0",
     "husky": "^9.1.7",
+    "jsdom": "^28.1.0",
     "lint-staged": "^16.3.2",
+    "next-sitemap": "^4.2.3",
     "prettier": "^3.4.0",
     "serve": "^14.2.6",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.18"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 
 export const metadata: Metadata = {
     title: "Tech Portal — Static Edge Infrastructure",
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
         "TypeScript",
     ],
     authors: [{ name: "Jean-Baptiste MONIN" }],
+    manifest: "/manifest.json",
     openGraph: {
         title: "Tech Portal — Static Edge Infrastructure",
         description:
@@ -27,6 +29,17 @@ export const metadata: Metadata = {
         index: true,
         follow: true,
     },
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: "black-translucent",
+        title: "Tech Portal",
+    },
+};
+
+export const viewport: Viewport = {
+    themeColor: "#6366f1",
+    width: "device-width",
+    initialScale: 1,
 };
 
 export default function RootLayout({
@@ -38,11 +51,21 @@ export default function RootLayout({
         <html lang="fr">
             <head>
                 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+                <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+                {/* Cloudflare Web Analytics — replace token with yours */}
+                {process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN && (
+                    <script
+                        defer
+                        src="https://static.cloudflareinsights.com/beacon.min.js"
+                        data-cf-beacon={`{"token": "${process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN}"}`}
+                    />
+                )}
             </head>
             <body>
                 <Header />
                 <main>{children}</main>
                 <Footer />
+                <ServiceWorkerRegistration />
             </body>
         </html>
     );

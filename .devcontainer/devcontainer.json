@@ -1,0 +1,42 @@
+// devcontainer.json — VS Code Dev Container configuration
+// Provides a consistent development environment for all team members
+{
+    "name": "Tech Portal",
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:22",
+    "features": {
+        "ghcr.io/devcontainers/features/aws-cli:1": {},
+        "ghcr.io/devcontainers/features/terraform:1": {},
+        "ghcr.io/devcontainers/features/python:1": {
+            "version": "3.12"
+        },
+        "ghcr.io/devcontainers/features/github-cli:1": {}
+    },
+    "forwardPorts": [
+        4000
+    ],
+    "postCreateCommand": "npm install",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "bradlc.vscode-tailwindcss",
+                "hashicorp.terraform",
+                "ms-playwright.playwright",
+                "vitest.explorer",
+                "github.copilot"
+            ],
+            "settings": {
+                "editor.defaultFormatter": "esbenp.prettier-vscode",
+                "editor.formatOnSave": true,
+                "editor.codeActionsOnSave": {
+                    "source.fixAll.eslint": "explicit"
+                },
+                "typescript.tsdk": "node_modules/typescript/lib"
+            }
+        }
+    },
+    "remoteEnv": {
+        "NODE_ENV": "development"
+    }
+}

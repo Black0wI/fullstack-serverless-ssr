@@ -64,3 +64,6 @@ __pycache__/
 
 # lighthouse
 .lighthouseci/
+
+# vitest
+coverage/
