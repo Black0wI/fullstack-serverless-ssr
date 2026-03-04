@@ -1,0 +1,27 @@
+# Cursor AI Rules — Tech Portal
+# These rules are also compatible with other AI coding assistants.
+
+## Tech Stack
+- Next.js 15 (App Router, TypeScript, static export)
+- Vanilla CSS with custom properties (NO Tailwind)
+- AWS CloudFront + S3 via Terraform
+- GitHub Actions CI/CD
+
+## Coding Standards
+- TypeScript strict mode, no `any`
+- Named exports for components
+- Path aliases: `@/*` → `./src/*`
+- BEM naming for CSS: `.block__element--modifier`
+- CSS tokens via `var(--custom-property)`
+- Server Components by default
+
+## File Conventions
+- Components: `src/components/PascalCase.tsx`
+- Pages: `src/app/**/page.tsx`
+- Styles: `src/app/globals.css` (design system)
+- Infrastructure: `infra/*.tf`
+
+## Important
+- This is a STATIC site (output: 'export') — no API routes
+- All images must be unoptimized
+- Use `trailingSlash: true` in URLs

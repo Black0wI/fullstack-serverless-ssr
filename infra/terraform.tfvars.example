@@ -1,0 +1,15 @@
+# Example Terraform variable values
+# Copy to terraform.tfvars and customize
+
+project_name           = "tech-portal"
+environment            = "production"
+aws_region             = "eu-west-3"
+domain_name            = ""  # Set to your domain, e.g. "portal.example.com"
+acm_certificate_arn    = ""  # Required if domain_name is set (must be in us-east-1)
+cloudfront_price_class = "PriceClass_100"
+
+tags = {
+  Project     = "tech-portal"
+  Environment = "production"
+  ManagedBy   = "terraform"
+}
