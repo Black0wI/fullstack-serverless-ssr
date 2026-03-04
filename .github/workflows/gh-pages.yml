@@ -29,10 +29,14 @@ jobs:
 
       - name: Build static export for GitHub Pages
         run: |
-          # Temporarily switch next.config to static export mode
-          cp next.config.ts next.config.ts.bak
+          # Remove files incompatible with static export
+          rm -f src/middleware.ts
+          rm -rf src/app/api/
+
+          # Replace next.config with static export version
           cat > next.config.ts << 'NEXTCONFIG'
           import type { NextConfig } from "next";
+          import withBundleAnalyzer from "@next/bundle-analyzer";
 
           const nextConfig: NextConfig = {
             output: "export",
@@ -41,9 +45,17 @@ jobs:
             trailingSlash: true,
           };
 
-          export default nextConfig;
+          const analyzer = withBundleAnalyzer({
+            enabled: process.env.ANALYZE === "true",
+          });
+
+          export default analyzer(nextConfig);
           NEXTCONFIG
+
           npx next build
+
+          test -f out/index.html && echo "✅ Static export successful" || exit 1
+          echo "📦 Output size: $(du -sh out/ | cut -f1)"
         env:
           NEXT_PUBLIC_SITE_URL: https://black0wi.github.io/nextjs-static-edge-template
 
