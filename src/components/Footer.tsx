@@ -19,7 +19,7 @@ export function Footer() {
             <a href="/docs/">Documentation</a>
           </li>
           <li>
-            <a href="mailto:contact@example.com">Contact</a>
+            <a href="mailto:jb.monin@orizon.xs">Contact</a>
           </li>
         </ul>
       </div>
