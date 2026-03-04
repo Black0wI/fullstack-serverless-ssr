@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function Footer() {
   const year = new Date().getFullYear();
 
@@ -16,7 +18,7 @@ export function Footer() {
             </a>
           </li>
           <li>
-            <a href="/docs/">Documentation</a>
+            <Link href="/docs">Documentation</Link>
           </li>
           <li>
             <a href="mailto:contact@orizon.sx">Contact</a>
