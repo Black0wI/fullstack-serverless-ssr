@@ -12,7 +12,7 @@ export function Header() {
         <nav>
           <ul className="header__nav">
             <li>
-              <a href="#features">Features</a>
+              <Link href="/#features">Features</Link>
             </li>
             <li>
               <Link href="/docs/">Docs</Link>
@@ -30,9 +30,9 @@ export function Header() {
         </nav>
 
         <div className="header__actions">
-          <a href="#hero" className="btn btn--primary">
+          <Link href="/#hero" className="btn btn--primary">
             Get Started
-          </a>
+          </Link>
         </div>
       </div>
     </header>

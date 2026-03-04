@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <>
@@ -28,9 +30,9 @@ export default function Home() {
           </p>
 
           <div className="hero__actions animate-fade-in-up animate-delay-3">
-            <a href="#features" className="btn btn--primary btn--lg">
+            <Link href="/#features" className="btn btn--primary btn--lg">
               Explore Features
-            </a>
+            </Link>
             <a
               href="https://github.com/Black0wI/nextjs-static-edge-template"
               className="btn btn--ghost btn--lg"
