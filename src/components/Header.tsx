@@ -15,6 +15,9 @@ export function Header() {
               <Link href="/#features">Features</Link>
             </li>
             <li>
+              <Link href="/dashboard">Dashboard</Link>
+            </li>
+            <li>
               <Link href="/docs/">Docs</Link>
             </li>
             <li>
