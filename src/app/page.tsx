@@ -32,7 +32,7 @@ export default function Home() {
               Explore Features
             </a>
             <a
-              href="https://github.com/itakademy/tech-portal"
+              href="https://github.com/Black0wI/nextjs-static-edge-template"
               className="btn btn--ghost btn--lg"
               target="_blank"
               rel="noopener noreferrer"

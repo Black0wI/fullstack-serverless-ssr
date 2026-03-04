@@ -8,7 +8,7 @@ export function Footer() {
         <ul className="footer__links">
           <li>
             <a
-              href="https://github.com/itakademy/tech-portal"
+              href="https://github.com/Black0wI/nextjs-static-edge-template"
               target="_blank"
               rel="noopener noreferrer"
             >
