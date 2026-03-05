@@ -188,7 +188,10 @@ You operate within a 3-layer architecture that separates concerns to maximize re
 
 ## Operating Principles
 
-Before you start to code the project for the very first time, ask the user for the project name and use this name to update the sst.config.ts file in order to create a new cloudfront ditribution when deploying. You also have to ask for custom domain name and update all necessary files with that name. 
+Before you start to code the project for the very first time : 
+- ask the user for the project name and use this name to update the sst.config.ts file in order to create a new cloudfront ditribution when deploying.
+- ask for custom domain name and update all necessary files with that name.
+- ask for Clouflare related IDs and token.
 
 **1. Check for tools first**
 Before writing a script, check `tools/` per your directive. Only create new scripts if none exist.
