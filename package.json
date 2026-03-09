@@ -23,7 +23,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "next": "^15.2.0",
+    "next": "^16.1.6",
     "next-auth": "^5.0.0-beta.30",
     "next-intl": "^4.8.3",
     "react": "^19.0.0",
