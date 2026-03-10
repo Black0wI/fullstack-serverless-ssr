@@ -24,13 +24,14 @@ function isRateLimited(ip: string): boolean {
 }
 
 /**
- * Next.js Middleware — runs on every request at the edge.
+ * Next.js 16 Proxy — replaces middleware.ts.
+ * Runs on every matched request as a network boundary layer.
  *
  * Currently handles:
  * - Rate limiting on /api/* routes
- * - Auth skeleton (uncomment to protect routes)
+ * - Auth guard (uncomment to protect routes via NextAuth)
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // ── Rate Limiting (API routes only) ──
@@ -45,11 +46,14 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // ── Auth Guard (uncomment to protect routes) ──
-  // if (pathname.startsWith("/dashboard")) {
-  //   const token = request.cookies.get("session")?.value;
-  //   if (!token) {
-  //     return NextResponse.redirect(new URL("/login", request.url));
+  // ── Auth Guard (uncomment to protect /protected/* routes) ──
+  // To enable auth protection:
+  // 1. Export `auth` as the proxy: export { auth as proxy } from "@/lib/auth"
+  // 2. Or check session manually:
+  // if (pathname.startsWith("/protected")) {
+  //   const session = request.cookies.get("authjs.session-token")?.value;
+  //   if (!session) {
+  //     return NextResponse.redirect(new URL("/api/auth/signin", request.url));
   //   }
   // }
 
@@ -57,13 +61,11 @@ export function middleware(request: NextRequest) {
 }
 
 /**
- * Configure which routes the middleware runs on.
- * By default: all /api/* routes.
- * Add more matchers to protect additional paths.
+ * Configure which routes the proxy runs on.
  */
 export const config = {
   matcher: [
     "/api/:path*",
-    // "/dashboard/:path*",  // Uncomment for auth protection
+    // "/protected/:path*",  // Uncomment to protect routes
   ],
 };

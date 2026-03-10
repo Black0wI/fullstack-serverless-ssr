@@ -1,0 +1,27 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":semanticCommitTypeAll(chore)", "group:allNonMajor"],
+  "labels": ["dependencies"],
+  "automerge": true,
+  "automergeType": "pr",
+  "platformAutomerge": true,
+  "schedule": ["before 8am on Monday"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    },
+    {
+      "matchPackagePatterns": ["eslint", "prettier", "typescript"],
+      "groupName": "tooling"
+    },
+    {
+      "matchPackagePatterns": ["vitest", "@testing-library", "playwright"],
+      "groupName": "testing"
+    },
+    {
+      "matchPackagePatterns": ["next", "react", "react-dom"],
+      "groupName": "next.js"
+    }
+  ]
+}

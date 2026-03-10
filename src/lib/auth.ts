@@ -1,46 +1,58 @@
 import NextAuth from "next-auth";
-import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 
 /**
- * Auth.js (NextAuth v5) configuration.
+ * NextAuth v5 configuration — pre-wired auth example.
  *
- * To enable authentication:
- * 1. Set AUTH_SECRET (generate with: npx auth secret)
- * 2. Configure OAuth providers (GitHub, Google, etc.)
- * 3. Uncomment the middleware auth guard in src/middleware.ts
+ * Providers included:
+ * - Google OAuth (set AUTH_GOOGLE_ID + AUTH_GOOGLE_SECRET)
+ * - Credentials (for development / custom login)
  *
- * Environment variables needed:
- * - AUTH_SECRET          → Required (npx auth secret)
- * - AUTH_GITHUB_ID       → GitHub OAuth App ID
- * - AUTH_GITHUB_SECRET   → GitHub OAuth App Secret
- * - AUTH_GOOGLE_ID       → Google OAuth Client ID
- * - AUTH_GOOGLE_SECRET   → Google OAuth Client Secret
+ * To enable auth:
+ * 1. Generate a secret: `npx auth secret`
+ * 2. Set AUTH_SECRET in .env.local
+ * 3. Configure provider credentials
+ * 4. Uncomment the auth guard in proxy.ts
+ *
+ * Docs: https://authjs.dev/getting-started
  */
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-    GitHub({
-      clientId: process.env.AUTH_GITHUB_ID,
-      clientSecret: process.env.AUTH_GITHUB_SECRET,
-    }),
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(_credentials) {
+        // ⚠️ IMPLEMENT YOUR OWN AUTH LOGIC HERE
+        // Example:
+        // const user = await db.user.findByEmail(credentials.email);
+        // if (user && await bcrypt.compare(credentials.password, user.hash)) {
+        //   return { id: user.id, name: user.name, email: user.email };
+        // }
+
+        // Default: reject all credentials until you implement your own logic
+        return null;
+      },
+    }),
   ],
   pages: {
-    signIn: "/login",
+    signIn: "/auth/signin",
     // error: "/auth/error",
   },
   callbacks: {
     authorized({ auth: session, request: { nextUrl } }) {
       const isLoggedIn = !!session?.user;
-      const isProtected = nextUrl.pathname.startsWith("/dashboard");
-
+      const isProtected = nextUrl.pathname.startsWith("/protected");
       if (isProtected && !isLoggedIn) {
-        return false; // Redirect to sign-in
+        return false; // Redirect to signIn page
       }
-
       return true;
     },
   },

@@ -2,7 +2,7 @@
 # These rules are also compatible with other AI coding assistants.
 
 ## Tech Stack
-- Next.js 15 (App Router, TypeScript, SSR via SST/OpenNext)
+- Next.js 16 (App Router, TypeScript, SSR via SST/OpenNext)
 - Vanilla CSS with custom properties (NO Tailwind)
 - AWS CloudFront + Lambda + S3 via SST v4 Ion
 - Direct CLI deployment (`npx sst deploy`)

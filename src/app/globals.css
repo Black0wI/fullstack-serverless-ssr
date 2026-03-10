@@ -810,3 +810,103 @@ button {
     text-align: center;
   }
 }
+
+/* ============================================
+   ERROR & NOT-FOUND PAGES
+   ============================================ */
+
+.error-page {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  background: var(--color-bg-primary);
+}
+
+.error-page__content {
+  text-align: center;
+  max-width: 480px;
+}
+
+.error-page__icon {
+  font-size: 4rem;
+  margin-bottom: var(--space-6);
+  animation: float 4s ease-in-out infinite;
+}
+
+.error-page__code {
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 15vw, 10rem);
+  font-weight: 800;
+  background: var(--gradient-hero);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  margin-bottom: var(--space-4);
+}
+
+.error-page__title {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  margin-bottom: var(--space-4);
+}
+
+.error-page__message {
+  color: var(--color-text-secondary);
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+  margin-bottom: var(--space-8);
+}
+
+.error-page__digest {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-6);
+}
+
+.error-page__digest code {
+  font-family: var(--font-mono);
+  background: var(--color-bg-tertiary);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================
+   LOADING PAGE
+   ============================================ */
+
+.loading-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  background: var(--color-bg-primary);
+}
+
+.loading-page__spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-page__text {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

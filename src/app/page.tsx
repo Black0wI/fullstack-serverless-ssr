@@ -25,7 +25,7 @@ export default function Home() {
           </h1>
 
           <p className="hero__subtitle animate-fade-in-up animate-delay-2">
-            Next.js 15 · SST v4 Ion · AWS Lambda + CloudFront · Cloudflare DNS. Full-stack
+            Next.js 16 · SST v4 Ion · AWS Lambda + CloudFront · Cloudflare DNS. Full-stack
             SSR, deploy in one command, scale globally.
           </p>
 

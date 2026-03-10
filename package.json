@@ -2,7 +2,7 @@
   "name": "fullstack-serverless-ssr",
   "version": "0.1.0",
   "private": true,
-  "description": "Next.js 15 Full-Stack SSR — AWS SST v4 Ion + CloudFront + Lambda + Cloudflare DNS",
+  "description": "Next.js 16 Full-Stack SSR — AWS SST v4 Ion + CloudFront + Lambda + Cloudflare DNS",
   "author": "Jean-Baptiste MONIN",
   "license": "MIT",
   "scripts": {
@@ -10,8 +10,8 @@
     "build": "next build",
     "postbuild": "next-sitemap",
     "start": "next start",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
     "type-check": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -22,7 +22,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "next": "^15.2.0",
+    "next": "^16.1.6",
     "next-auth": "^5.0.0-beta.30",
     "next-intl": "^4.8.3",
     "react": "^19.0.0",
@@ -31,6 +31,8 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.4.3",
+    "@commitlint/config-conventional": "^20.4.3",
     "@next/bundle-analyzer": "^16.1.6",
     "@playwright/test": "^1.58.2",
     "@testing-library/jest-dom": "^6.9.1",
@@ -40,7 +42,7 @@
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^5.1.4",
     "eslint": "^9.0.0",
-    "eslint-config-next": "^15.2.0",
+    "eslint-config-next": "^16.1.6",
     "husky": "^9.1.7",
     "jsdom": "^28.1.0",
     "lint-staged": "^16.3.2",

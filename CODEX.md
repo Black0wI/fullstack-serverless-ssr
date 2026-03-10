@@ -4,13 +4,13 @@
 
 ## Project Overview
 
-**Fullstack Serverless SSR** is a modern Next.js 15 full-stack application deployed on AWS via **SST v4** (Ion/OpenNext). It supports SSR, API Routes, Server Actions, and static pages — all served globally through CloudFront with Cloudflare DNS integration.
+**Fullstack Serverless SSR** is a modern Next.js 16 full-stack application deployed on AWS via **SST v4** (Ion/OpenNext). It supports SSR, API Routes, Server Actions, and static pages — all served globally through CloudFront with Cloudflare DNS integration.
 
 ## Tech Stack
 
 | Layer      | Technology                                             |
 | ---------- | ------------------------------------------------------ |
-| Framework  | Next.js 15 (App Router, SSR + Static)                  |
+| Framework  | Next.js 16 (App Router, SSR + Static)                  |
 | Language   | TypeScript 5 (strict mode)                             |
 | Styling    | Vanilla CSS (custom properties, no Tailwind)           |
 | Hosting    | AWS CloudFront + Lambda + S3 (SST/OpenNext)            |

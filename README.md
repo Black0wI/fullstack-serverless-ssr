@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-> 🚀 Production-ready Next.js 15 full-stack boilerplate deployed on AWS with SST v4 Ion (OpenNext), direct CLI deployment, full test suite, and PWA support.
+> 🚀 Production-ready Next.js 16 full-stack boilerplate deployed on AWS with SST v4 Ion (OpenNext), direct CLI deployment, full test suite, and PWA support.
 
 ## Architecture
 
@@ -40,7 +40,7 @@ make dev
 
 | Layer      | Technology                            |
 | ---------- | ------------------------------------- |
-| Framework  | Next.js 15 (App Router, SSR + Static) |
+| Framework  | Next.js 16 (App Router, SSR + Static) |
 | Language   | TypeScript 5 (strict mode)            |
 | Styling    | Vanilla CSS (custom properties)       |
 | Hosting    | AWS CloudFront + Lambda + S3          |

@@ -10,6 +10,7 @@ export async function GET() {
     status: "ok",
     version: pkg.version,
     environment: process.env.NODE_ENV,
+    stage: process.env.SST_STAGE || "local",
     timestamp: new Date().toISOString(),
     uptime: `${uptime}s`,
     region: process.env.AWS_REGION || "local",

@@ -22,7 +22,7 @@ Les options considérées étaient :
 
 ## Décision
 
-Nous utilisons **SST v3** avec le composant `sst.aws.Nextjs` pour déployer une application **Next.js 15 full SSR** sur AWS (CloudFront + Lambda@Edge), avec **Cloudflare** pour la gestion DNS du domaine personnalisé.
+Nous utilisons **SST v3** avec le composant `sst.aws.Nextjs` pour déployer une application **Next.js 16 full SSR** sur AWS (CloudFront + Lambda@Edge), avec **Cloudflare** pour la gestion DNS du domaine personnalisé.
 
 ## Justification
 
@@ -49,18 +49,18 @@ Nous utilisons **SST v3** avec le composant `sst.aws.Nextjs` pour déployer une 
 
 **Stack technique :**
 
-| Couche        | Technologie                           |
-| ------------- | ------------------------------------- |
-| Framework     | Next.js 15 (React 19, Turbopack)      |
-| Auth          | Auth.js v5 (next-auth, Google OAuth)  |
-| i18n          | next-intl v4                          |
-| IaC           | SST v3 (Pulumi)                       |
-| CDN           | CloudFront                            |
-| Compute       | Lambda@Edge                           |
-| Storage       | S3 (assets statiques)                 |
-| DNS           | Cloudflare (`onboard-sales.it-akademy.fr`) |
-| CI/CD         | GitHub Actions                        |
-| Région        | eu-west-3 (Paris)                     |
+| Couche    | Technologie                                |
+| --------- | ------------------------------------------ |
+| Framework | Next.js 16 (React 19, Turbopack)           |
+| Auth      | Auth.js v5 (next-auth, Google OAuth)       |
+| i18n      | next-intl v4                               |
+| IaC       | SST v3 (Pulumi)                            |
+| CDN       | CloudFront                                 |
+| Compute   | Lambda@Edge                                |
+| Storage   | S3 (assets statiques)                      |
+| DNS       | Cloudflare (`onboard-sales.it-akademy.fr`) |
+| CI/CD     | GitHub Actions                             |
+| Région    | eu-west-3 (Paris)                          |
 
 ## Conséquences
 
