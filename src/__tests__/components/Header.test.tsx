@@ -11,6 +11,7 @@ describe("Header", () => {
   it("renders navigation links", () => {
     render(<Header />);
     expect(screen.getByText("Features")).toBeInTheDocument();
+    expect(screen.getByText("Examples")).toBeInTheDocument();
     expect(screen.getByText("Docs")).toBeInTheDocument();
   });
 
