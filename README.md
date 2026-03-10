@@ -1,4 +1,4 @@
-# Tech Portal — Next.js Full-Stack on AWS
+# Fullstack Serverless SSR — Next.js on AWS
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -28,12 +28,12 @@
 ```bash
 # Clone and setup
 git clone https://github.com/Black0wI/nextjs-static-edge-template.git
-cd tech-portal
+cd fullstack-serverless-ssr
 make setup
 
 # Start development
 make dev
-# → http://localhost:4000
+# → http://localhost:4040
 ```
 
 ## Stack
@@ -66,7 +66,7 @@ make dev
 ## Commands
 
 ```bash
-make dev          # Dev server (Turbopack, port 4000)
+make dev          # Dev server (Turbopack, port 4040)
 make build        # Build the application
 make deploy       # Deploy to production with SST
 make check        # Lint + type-check + format + build

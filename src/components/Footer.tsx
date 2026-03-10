@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="container footer__inner">
-        <p className="footer__copy">© {year} Jean-Baptiste MONIN. MIT License.</p>
+        <p className="footer__copy">© {year} IT-Akademy. MIT License.</p>
         <ul className="footer__links">
           <li>
             <a

@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 
 export const metadata: Metadata = {
-  title: "Tech Portal — Static Edge Infrastructure",
+  title: "Fullstack Serverless SSR — Next.js on AWS",
   description:
     "Modern Next.js application deployed on AWS CloudFront with Terraform IaC. Production-ready boilerplate with CI/CD, premium design, and Claude AI integration.",
   keywords: [
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Jean-Baptiste MONIN" }],
   manifest: "/manifest.json",
   openGraph: {
-    title: "Tech Portal — Static Edge Infrastructure",
+    title: "Fullstack Serverless SSR — Next.js on AWS",
     description:
       "Modern Next.js application deployed on AWS CloudFront with Terraform IaC.",
     type: "website",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Tech Portal",
+    title: "Fullstack Serverless SSR",
   },
 };
 

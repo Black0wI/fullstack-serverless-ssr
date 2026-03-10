@@ -1,5 +1,5 @@
 # ============================================
-# TECH PORTAL — Makefile
+# FULLSTACK SERVERLESS SSR — Makefile
 # ============================================
 
 .PHONY: setup dev build lint format type-check deploy clean help test

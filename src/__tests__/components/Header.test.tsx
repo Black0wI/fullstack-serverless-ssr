@@ -5,7 +5,7 @@ import { Header } from "@/components/Header";
 describe("Header", () => {
   it("renders the logo text", () => {
     render(<Header />);
-    expect(screen.getByText("Tech Portal")).toBeInTheDocument();
+    expect(screen.getByText("Fullstack Serverless SSR")).toBeInTheDocument();
   });
 
   it("renders navigation links", () => {

@@ -1,4 +1,4 @@
-# Contributing to Tech Portal
+# Contributing to Fullstack Serverless SSR
 
 Thank you for your interest in contributing! This document provides guidelines for a smooth contribution workflow.
 
@@ -6,7 +6,7 @@ Thank you for your interest in contributing! This document provides guidelines f
 
 ```bash
 git clone https://github.com/Black0wI/nextjs-static-edge-template.git
-cd tech-portal
+cd fullstack-serverless-ssr
 make setup
 make dev
 ```

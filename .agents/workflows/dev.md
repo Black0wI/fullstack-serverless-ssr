@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-Le serveur démarre sur `http://localhost:4000`.
+Le serveur démarre sur `http://localhost:4040`.
 
 ## Vérification qualité
 

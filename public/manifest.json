@@ -1,7 +1,7 @@
 {
-  "name": "Tech Portal",
-  "short_name": "TechPortal",
-  "description": "Next.js Static Edge — AWS CloudFront + Terraform",
+  "name": "Fullstack Serverless SSR",
+  "short_name": "FS-SSR",
+  "description": "Next.js 15 Full-Stack SSR — AWS SST v4 Ion + CloudFront + Lambda",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0f",

@@ -21,12 +21,12 @@ export default function Home() {
           </div>
 
           <h1 className="hero__title animate-fade-in-up animate-delay-1">
-            Build at the <span className="hero__title-gradient">Edge</span>
+            Ship <span className="hero__title-gradient">Serverless</span> Fast
           </h1>
 
           <p className="hero__subtitle animate-fade-in-up animate-delay-2">
-            Next.js 15 · AWS CloudFront · Terraform IaC · Claude AI. Everything you need
-            to ship fast, deploy globally, and iterate with confidence.
+            Next.js 15 · SST v4 Ion · AWS Lambda + CloudFront · Cloudflare DNS. Full-stack
+            SSR, deploy in one command, scale globally.
           </p>
 
           <div className="hero__actions animate-fade-in-up animate-delay-3">
@@ -52,23 +52,17 @@ export default function Home() {
               </div>
               <pre className="hero__code-body">
                 <code>
-                  <span className="comment">
-                    {`# Deploy to CloudFront in one command`}
-                  </span>
+                  <span className="comment">{`# Deploy SSR to AWS in one command`}</span>
                   {"\n"}
-                  <span className="function">{"npm"}</span>
-                  {" run build"}
-                  {"\n"}
-                  <span className="function">{"make"}</span>
-                  {" deploy "}
-                  <span className="string">{"ENV=production"}</span>
+                  <span className="function">{"npx"}</span>
+                  {" sst deploy "}
+                  <span className="string">{"--stage production"}</span>
                   {"\n\n"}
-                  <span className="comment">{"# Or let CI/CD handle it"}</span>
+                  <span className="comment">{"# SST handles everything"}</span>
                   {"\n"}
-                  <span className="function">{"git"}</span>
-                  {" push origin "}
-                  <span className="string">{"main"}</span>{" "}
-                  <span className="comment">{"# → auto-deploy 🚀"}</span>
+                  <span className="comment">
+                    {"# → Lambda + CloudFront + S3 + Cloudflare DNS 🚀"}
+                  </span>
                 </code>
               </pre>
             </div>
@@ -90,37 +84,38 @@ export default function Home() {
           <div className="features__grid">
             <div className="feature-card glass animate-fade-in-up animate-delay-1">
               <div className="feature-card__icon">⚡</div>
-              <h3 className="feature-card__title">Static Edge Delivery</h3>
+              <h3 className="feature-card__title">Full-Stack SSR</h3>
               <p className="feature-card__description">
-                Next.js static export served through AWS CloudFront. Sub-second global
-                load times with edge caching and CloudFront Functions.
+                Server-side rendering via AWS Lambda and CloudFront. API Routes, Server
+                Actions, ISR — all powered by OpenNext.
               </p>
             </div>
 
             <div className="feature-card glass animate-fade-in-up animate-delay-2">
               <div className="feature-card__icon">🏗️</div>
-              <h3 className="feature-card__title">Terraform IaC</h3>
+              <h3 className="feature-card__title">SST v4 Ion</h3>
               <p className="feature-card__description">
-                Complete infrastructure as code: S3, CloudFront, OAC, ACM, Route53.
-                Version-controlled, repeatable, and auditable.
+                Infrastructure as code with zero config. Lambda, CloudFront, S3,
+                Cloudflare DNS — all managed by a single <code>sst.config.ts</code>.
               </p>
             </div>
 
             <div className="feature-card glass animate-fade-in-up animate-delay-3">
-              <div className="feature-card__icon">🔄</div>
-              <h3 className="feature-card__title">GitHub Actions CI/CD</h3>
+              <div className="feature-card__icon">🚀</div>
+              <h3 className="feature-card__title">CLI Direct Deploy</h3>
               <p className="feature-card__description">
-                Automated pipelines for build, lint, type-check, and deploy. PR previews
-                with Terraform plan. Merge to main to ship.
+                No CI/CD pipeline needed. Deploy from your terminal with{" "}
+                <code>npx sst deploy</code>. Built-in deploy guards prevent accidental
+                conflicts.
               </p>
             </div>
 
             <div className="feature-card glass animate-fade-in-up animate-delay-4">
               <div className="feature-card__icon">🤖</div>
-              <h3 className="feature-card__title">Claude AI Integration</h3>
+              <h3 className="feature-card__title">AI-Ready</h3>
               <p className="feature-card__description">
-                CLAUDE.md project context, .claude settings, and architecture docs.
-                Optimized for pair programming with Claude Opus 4.6.
+                CLAUDE.md project context, Cursor rules, and Antigravity workflows.
+                Optimized for pair programming with AI assistants.
               </p>
             </div>
 

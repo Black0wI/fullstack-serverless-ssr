@@ -5,17 +5,14 @@ export function Header() {
     <header className="header">
       <div className="container header__inner">
         <Link href="/" className="header__logo">
-          <span className="header__logo-icon">TP</span>
-          <span className="header__logo-text">Tech Portal</span>
+          <span className="header__logo-icon">FS</span>
+          <span className="header__logo-text">Fullstack Serverless SSR</span>
         </Link>
 
         <nav>
           <ul className="header__nav">
             <li>
               <Link href="/#features">Features</Link>
-            </li>
-            <li>
-              <Link href="/dashboard">Dashboard</Link>
             </li>
             <li>
               <Link href="/docs/">Docs</Link>

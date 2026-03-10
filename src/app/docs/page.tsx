@@ -4,9 +4,9 @@ import type { Metadata } from "next";
 import "./docs.css";
 
 export const metadata: Metadata = {
-  title: "Documentation | Tech Portal",
+  title: "Documentation | Fullstack Serverless SSR",
   description:
-    "Complete documentation for the Tech Portal Next.js boilerplate — architecture, setup, commands, and deployment guide.",
+    "Complete documentation for the Fullstack Serverless SSR Next.js boilerplate — architecture, setup, commands, and deployment guide.",
 };
 
 /**

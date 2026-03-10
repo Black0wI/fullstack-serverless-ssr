@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
-const SITE_NAME = "Tech Portal";
+const SITE_NAME = "Fullstack Serverless SSR";
 
 /**
  * Generate SEO-optimized metadata for any page.
