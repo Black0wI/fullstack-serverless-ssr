@@ -4,62 +4,34 @@ description: Déployer l'application en production
 
 # Deploy Production
 
-Déploie le build statique sur S3 + CloudFront avec invalidation du cache.
+Déploie l'application Next.js SSR sur AWS via SST (Lambda + CloudFront + S3).
 
 ## Prérequis
 
 - AWS CLI configuré (`aws sts get-caller-identity` doit fonctionner)
-- Terraform initialisé (`cd infra && terraform init`)
-- Variables Terraform configurées (`infra/terraform.tfvars`)
+- Variables d'environnement configurées (`.env` ou export shell) :
+  - `DOMAIN_NAME` — le domaine cible
+  - `CLOUDFLARE_API_TOKEN` — token API Cloudflare
+  - `CLOUDFLARE_DEFAULT_ACCOUNT_ID` — ID du compte Cloudflare
 
 ## Étapes
 
-1. Builder l'application :
+// turbo 1. Installer les dépendances :
 
 ```bash
-npm run build
+npm install
 ```
 
-2. Vérifier le build :
+// turbo 2. Déployer avec SST :
 
 ```bash
-ls out/index.html
+npx sst deploy --stage production
 ```
 
-// turbo 3. Appliquer l'infrastructure Terraform :
+3. Vérifier le déploiement :
 
 ```bash
-cd infra && terraform apply
-```
-
-4. Récupérer les outputs :
-
-```bash
-cd infra && terraform output
-```
-
-// turbo 5. Sync sur S3 (assets immutables) :
-
-```bash
-BUCKET=$(cd infra && terraform output -raw s3_bucket_name) && aws s3 sync out/ s3://$BUCKET --delete --cache-control "public, max-age=31536000, immutable" --exclude "*.html" --exclude "*.json"
-```
-
-// turbo 6. Sync sur S3 (HTML, must-revalidate) :
-
-```bash
-BUCKET=$(cd infra && terraform output -raw s3_bucket_name) && aws s3 sync out/ s3://$BUCKET --delete --cache-control "public, max-age=0, must-revalidate" --include "*.html" --include "*.json" --exclude "_next/*"
-```
-
-// turbo 7. Invalider le cache CloudFront :
-
-```bash
-DIST_ID=$(cd infra && terraform output -raw cloudfront_distribution_id) && aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/*"
-```
-
-8. Vérifier le déploiement :
-
-```bash
-URL=$(cd infra && terraform output -raw cloudfront_url) && echo "✅ Déployé sur $URL"
+echo "✅ Vérifier l'URL affichée dans les outputs SST"
 ```
 
 ## Raccourci
@@ -68,4 +40,12 @@ Tout-en-un via le Makefile :
 
 ```bash
 make deploy
+```
+
+## Autres commandes utiles
+
+```bash
+make sst-diff     # Prévisualiser les changements infra
+make sst-remove   # Supprimer l'infrastructure SST
+make sst-dev      # Mode dev SST (live Lambda)
 ```

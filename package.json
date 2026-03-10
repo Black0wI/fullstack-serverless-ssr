@@ -19,7 +19,6 @@
     "analyze": "ANALYZE=true next build",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\"",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "prepare": "husky"
   },
   "dependencies": {
@@ -32,7 +31,6 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@lhci/cli": "^0.15.1",
     "@next/bundle-analyzer": "^16.1.6",
     "@playwright/test": "^1.58.2",
     "@testing-library/jest-dom": "^6.9.1",
@@ -41,7 +39,6 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^5.1.4",
-    "conventional-changelog-cli": "^5.0.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.2.0",
     "husky": "^9.1.7",

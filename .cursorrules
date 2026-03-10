@@ -2,10 +2,10 @@
 # These rules are also compatible with other AI coding assistants.
 
 ## Tech Stack
-- Next.js 15 (App Router, TypeScript, static export)
+- Next.js 15 (App Router, TypeScript, SSR via SST/OpenNext)
 - Vanilla CSS with custom properties (NO Tailwind)
-- AWS CloudFront + S3 via Terraform
-- GitHub Actions CI/CD
+- AWS CloudFront + Lambda + S3 via SST v4 Ion
+- Direct CLI deployment (`npx sst deploy`)
 
 ## Coding Standards
 - TypeScript strict mode, no `any`
@@ -19,9 +19,9 @@
 - Components: `src/components/PascalCase.tsx`
 - Pages: `src/app/**/page.tsx`
 - Styles: `src/app/globals.css` (design system)
-- Infrastructure: `infra/*.tf`
+- Infrastructure: `sst.config.ts`
 
 ## Important
-- This is a STATIC site (output: 'export') — no API routes
-- All images must be unoptimized
-- Use `trailingSlash: true` in URLs
+- This is a FULL-STACK SSR app — API routes, Server Actions, ISR supported
+- Images are optimized by Next.js on the server (Lambda)
+- Deploy via `npx sst deploy --stage production`

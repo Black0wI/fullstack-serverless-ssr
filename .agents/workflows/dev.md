@@ -46,8 +46,8 @@ npm run format:check
 
 ## Build de test
 
-// turbo-all 6. Tester le build statique :
+// turbo 6. Tester le build SSR :
 
 ```bash
-npm run build && ls out/index.html && echo "✅ Build OK"
+npm run build && echo "✅ Build OK"
 ```
