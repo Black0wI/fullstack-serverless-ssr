@@ -35,7 +35,7 @@ npm run lint && npm run type-check && npm test && npm run build
 5. Commit the release:
 
 ```bash
-git add -A && git commit -m "release: vX.Y.Z"
+git add -A && git commit -m "chore(release): vX.Y.Z"
 ```
 
 // turbo 6. Create an annotated git tag:
@@ -57,7 +57,7 @@ For a minor release from v1.0.0 to v1.1.0:
 ```bash
 # After updating package.json and CHANGELOG.md:
 npm run lint && npm run type-check && npm test && npm run build
-git add -A && git commit -m "release: v1.1.0"
+git add -A && git commit -m "chore(release): v1.1.0"
 git tag -a v1.1.0 -m "v1.1.0 — Add dark/light theme toggle and OG image"
 git push origin HEAD --tags
 ```
@@ -67,5 +67,5 @@ git push origin HEAD --tags
 All-in-one via the Makefile (after updating package.json and CHANGELOG.md):
 
 ```bash
-make release VERSION=1.1.0
+make release VERSION=1.1.0 MSG="Add dark/light theme toggle"
 ```

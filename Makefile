@@ -83,7 +83,7 @@ release: ## Create a release (VERSION=x.y.z required)
 	@test -n "$(VERSION)" || (echo "❌ VERSION is required. Usage: make release VERSION=1.1.0" && exit 1)
 	@echo "📦 Releasing v$(VERSION)..."
 	npm run lint && npm run type-check && npm test && npm run build
-	git add -A && git commit -m "release: v$(VERSION)"
+	git add -A && git commit -m "chore(release): v$(VERSION)"
 	git tag -a v$(VERSION) -m "v$(VERSION)"
 	git push origin HEAD --tags
 	@echo "✅ Released v$(VERSION)!"
