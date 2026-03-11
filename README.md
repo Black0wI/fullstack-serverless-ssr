@@ -139,11 +139,19 @@ new sst.aws.Nextjs("Web", {
 
 ## AI Integration
 
-| File                 | Assistant              | Purpose                              |
-| -------------------- | ---------------------- | ------------------------------------ |
-| `CLAUDE.md`          | Claude Code / Opus 4.6 | Project context and conventions      |
-| `.cursorrules`       | Cursor AI              | Coding rules                         |
-| `.agents/workflows/` | Antigravity            | `/deploy`, `/dev`, `/push` workflows |
+This boilerplate ships with project context files that let AI coding assistants understand the architecture, conventions, and commands without you having to explain them each time.
+
+| File                    | Assistant                   | Purpose                                           |
+| ----------------------- | --------------------------- | ------------------------------------------------- |
+| `CLAUDE.md`             | Claude Code / Opus          | Full project context, conventions, and commands   |
+| `GEMINI.md`             | Google Gemini / Antigravity | Project overview, structure, and coding standards |
+| `CODEX.md`              | OpenAI Codex / ChatGPT      | Architecture summary and development guidelines   |
+| `AGENTS.md`             | Generic AI agents           | Agent-agnostic project context                    |
+| `.cursorrules`          | Cursor AI                   | Inline coding rules and constraints               |
+| `.claude/settings.json` | Claude Code                 | Allowed tool permissions                          |
+| `.agents/workflows/`    | Antigravity                 | `/deploy`, `/dev`, `/push` automation workflows   |
+
+> **Tip**: When you open the project in an AI-assisted editor, the assistant automatically reads the relevant context file and understands the stack, file structure, available commands, and coding conventions.
 
 ## Documentation
 
