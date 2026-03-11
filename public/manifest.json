@@ -1,7 +1,7 @@
 {
-  "name": "Fullstack Serverless SSR",
-  "short_name": "FS-SSR",
-  "description": "Next.js 16 Full-Stack SSR — AWS SST v4 Ion + CloudFront + Lambda",
+  "name": "Next.js SST Boilerplate",
+  "short_name": "Next SST",
+  "description": "Production-ready Next.js boilerplate for AWS with SST, OpenNext, CloudFront, and Lambda",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0f",

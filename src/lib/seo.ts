@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { env } from "@/lib/env";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
-const SITE_NAME = "Fullstack Serverless SSR";
+const SITE_URL = env.NEXT_PUBLIC_SITE_URL ?? "https://boilerplate.example.com";
+const SITE_NAME = "Next.js SST Boilerplate";
 
 /**
  * Generate SEO-optimized metadata for any page.

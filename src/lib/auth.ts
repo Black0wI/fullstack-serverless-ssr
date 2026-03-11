@@ -1,6 +1,32 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
+import { env } from "@/lib/env";
+
+const providers = [];
+
+if (env.isGoogleAuthConfigured) {
+  providers.push(
+    Google({
+      clientId: env.AUTH_GOOGLE_ID!,
+      clientSecret: env.AUTH_GOOGLE_SECRET!,
+    }),
+  );
+}
+
+providers.push(
+  Credentials({
+    name: "Credentials",
+    credentials: {
+      email: { label: "Email", type: "email" },
+      password: { label: "Password", type: "password" },
+    },
+    async authorize(_credentials) {
+      // Example-only provider. Replace with real logic before enabling auth in production.
+      return null;
+    },
+  }),
+);
 
 /**
  * NextAuth v5 configuration — pre-wired auth example.
@@ -18,30 +44,7 @@ import Credentials from "next-auth/providers/credentials";
  * Docs: https://authjs.dev/getting-started
  */
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
-    }),
-    Credentials({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(_credentials) {
-        // ⚠️ IMPLEMENT YOUR OWN AUTH LOGIC HERE
-        // Example:
-        // const user = await db.user.findByEmail(credentials.email);
-        // if (user && await bcrypt.compare(credentials.password, user.hash)) {
-        //   return { id: user.id, name: user.name, email: user.email };
-        // }
-
-        // Default: reject all credentials until you implement your own logic
-        return null;
-      },
-    }),
-  ],
+  providers,
   pages: {
     signIn: "/auth/signin",
     // error: "/auth/error",

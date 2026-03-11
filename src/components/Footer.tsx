@@ -8,7 +8,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="container footer__inner">
-        <p className="footer__copy">© {year} IT-Akademy. MIT License.</p>
+        <p className="footer__copy">© {year} Next.js SST Boilerplate. MIT License.</p>
         <ul className="footer__links">
           <li>
             <a
@@ -23,7 +23,7 @@ export function Footer() {
             <Link href="/docs">Documentation</Link>
           </li>
           <li>
-            <a href="mailto:contact@orizon.sx">Contact</a>
+            <a href="mailto:maintainers@example.com">Contact</a>
           </li>
         </ul>
       </div>

@@ -1,121 +1,173 @@
 import { readFileSync } from "fs";
 import { join } from "path";
+import { createElement, Fragment, type ReactNode } from "react";
 import type { Metadata } from "next";
+import { remark } from "remark";
+import remarkGfm from "remark-gfm";
 import "./docs.css";
 
 export const metadata: Metadata = {
-  title: "Documentation | Fullstack Serverless SSR",
+  title: "Documentation | Next.js SST Boilerplate",
   description:
-    "Complete documentation for the Fullstack Serverless SSR Next.js boilerplate — architecture, setup, commands, and deployment guide.",
+    "Documentation for the Next.js SST boilerplate: architecture, setup, commands, and deployment workflow.",
 };
 
-/**
- * Zero-dependency markdown-to-HTML converter.
- * Handles: headings, tables, code blocks, inline code, links,
- * images, bold, italic, blockquotes, lists, horizontal rules.
- */
-function markdownToHtml(md: string): string {
-  // Extract code blocks first to protect them from other replacements
-  const codeBlocks: string[] = [];
-  let result = md.replace(/```(\w*)\n([\s\S]*?)```/g, (_m, _lang, code) => {
-    const escaped = code
-      .trim()
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-    const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`;
-    codeBlocks.push(`<pre><code>${escaped}</code></pre>`);
-    return placeholder;
-  });
+interface MarkdownNode {
+  type: string;
+  value?: string;
+  depth?: number;
+  lang?: string | null;
+  ordered?: boolean;
+  url?: string;
+  alt?: string;
+  children?: MarkdownNode[];
+  align?: Array<"left" | "right" | "center" | null>;
+}
 
-  // Escape HTML in the rest
-  result = result.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-  // Inline code
-  result = result.replace(/`([^`]+)`/g, "<code>$1</code>");
-
-  // Images
-  result = result.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />');
-
-  // Links
-  result = result.replace(
-    /\[([^\]]+)\]\(([^)]+)\)/g,
-    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>',
+function renderChildren(
+  children: MarkdownNode[] | undefined,
+  keyPrefix: string,
+): ReactNode[] {
+  return (children ?? []).map((child, index) =>
+    renderNode(child, `${keyPrefix}-${index}`),
   );
+}
 
-  // Bold & italic
-  result = result.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-  result = result.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, "<em>$1</em>");
+function renderLink(node: MarkdownNode, key: string): ReactNode {
+  const href = node.url ?? "#";
+  const isExternal = /^https?:\/\//.test(href);
 
-  // Blockquotes
-  result = result.replace(/^&gt; (.+)$/gm, "<blockquote><p>$1</p></blockquote>");
-
-  // Tables
-  result = result.replace(
-    /^(\|.+\|)\n(\|[-| :]+\|)\n((?:\|.+\|\n?)+)/gm,
-    (_match: string, header: string, _sep: string, body: string) => {
-      const headerCells = header
-        .split("|")
-        .filter((c: string) => c.trim())
-        .map((c: string) => `<th>${c.trim()}</th>`)
-        .join("");
-      const rows = body
-        .trim()
-        .split("\n")
-        .map((row: string) => {
-          const cells = row
-            .split("|")
-            .filter((c: string) => c.trim())
-            .map((c: string) => `<td>${c.trim()}</td>`)
-            .join("");
-          return `<tr>${cells}</tr>`;
-        })
-        .join("");
-      return `<table><thead><tr>${headerCells}</tr></thead><tbody>${rows}</tbody></table>`;
-    },
+  return (
+    <a
+      key={key}
+      href={href}
+      target={isExternal ? "_blank" : undefined}
+      rel={isExternal ? "noopener noreferrer" : undefined}
+    >
+      {renderChildren(node.children, key)}
+    </a>
   );
+}
 
-  // Headings
-  result = result.replace(/^### (.+)$/gm, "<h3>$1</h3>");
-  result = result.replace(/^## (.+)$/gm, "<h2>$1</h2>");
-  result = result.replace(/^# (.+)$/gm, "<h1>$1</h1>");
+function renderTable(node: MarkdownNode, key: string): ReactNode {
+  const rows = node.children ?? [];
+  const [header, ...body] = rows;
 
-  // Horizontal rules
-  result = result.replace(/^---$/gm, "<hr />");
+  return (
+    <table key={key}>
+      {header && <thead>{renderNode(header, `${key}-head`) as ReactNode}</thead>}
+      {body.length > 0 && (
+        <tbody>{body.map((row, index) => renderNode(row, `${key}-body-${index}`))}</tbody>
+      )}
+    </table>
+  );
+}
 
-  // Lists
-  result = result.replace(/^- (.+)$/gm, "<li>$1</li>");
-  result = result.replace(/(<li>[\s\S]*?<\/li>\n?)+/g, (match) => `<ul>${match}</ul>`);
+function renderNode(node: MarkdownNode, key: string): ReactNode {
+  switch (node.type) {
+    case "root":
+      return <Fragment key={key}>{renderChildren(node.children, key)}</Fragment>;
+    case "heading":
+      return createElement(
+        `h${Math.min(Math.max(node.depth ?? 1, 1), 6)}`,
+        { key },
+        renderChildren(node.children, key),
+      );
+    case "paragraph":
+      return <p key={key}>{renderChildren(node.children, key)}</p>;
+    case "text":
+      return node.value ?? "";
+    case "strong":
+      return <strong key={key}>{renderChildren(node.children, key)}</strong>;
+    case "emphasis":
+      return <em key={key}>{renderChildren(node.children, key)}</em>;
+    case "delete":
+      return <del key={key}>{renderChildren(node.children, key)}</del>;
+    case "inlineCode":
+      return <code key={key}>{node.value ?? ""}</code>;
+    case "code":
+      return (
+        <pre key={key}>
+          <code className={node.lang ? `language-${node.lang}` : undefined}>
+            {node.value ?? ""}
+          </code>
+        </pre>
+      );
+    case "blockquote":
+      return <blockquote key={key}>{renderChildren(node.children, key)}</blockquote>;
+    case "list":
+      return node.ordered ? (
+        <ol key={key}>{renderChildren(node.children, key)}</ol>
+      ) : (
+        <ul key={key}>{renderChildren(node.children, key)}</ul>
+      );
+    case "listItem":
+      return <li key={key}>{renderChildren(node.children, key)}</li>;
+    case "link":
+      return renderLink(node, key);
+    case "image":
+      // README badges and inline docs images are rendered as-is from markdown content.
+      // eslint-disable-next-line @next/next/no-img-element
+      return <img key={key} src={node.url} alt={node.alt ?? ""} />;
+    case "thematicBreak":
+      return <hr key={key} />;
+    case "break":
+      return <br key={key} />;
+    case "table":
+      return renderTable(node, key);
+    case "tableRow":
+      return <tr key={key}>{renderChildren(node.children, key)}</tr>;
+    case "tableCell":
+      return <td key={key}>{renderChildren(node.children, key)}</td>;
+    case "tableHeader":
+      return <th key={key}>{renderChildren(node.children, key)}</th>;
+    case "html":
+    case "definition":
+      return null;
+    default:
+      return node.children ? (
+        <Fragment key={key}>{renderChildren(node.children, key)}</Fragment>
+      ) : null;
+  }
+}
 
-  // Restore code blocks
-  codeBlocks.forEach((block, i) => {
-    result = result.replace(`__CODE_BLOCK_${i}__`, block);
-  });
+function normalizeTables(node: MarkdownNode): MarkdownNode {
+  if (node.type === "table" && node.children) {
+    return {
+      ...node,
+      children: node.children.map((row, index) => ({
+        ...normalizeTables(row),
+        children: (row.children ?? []).map((cell) => ({
+          ...normalizeTables(cell),
+          type: index === 0 ? "tableHeader" : "tableCell",
+        })),
+      })),
+    };
+  }
 
-  // Paragraphs — wrap remaining text blocks
-  result = result
-    .split("\n\n")
-    .map((block) => {
-      const trimmed = block.trim();
-      if (!trimmed) return "";
-      if (trimmed.startsWith("<")) return trimmed;
-      if (trimmed.startsWith("__CODE_BLOCK_")) return trimmed;
-      return `<p>${trimmed.replace(/\n/g, "<br />")}</p>`;
-    })
-    .join("\n");
+  if (!node.children) {
+    return node;
+  }
 
-  return result;
+  return {
+    ...node,
+    children: node.children.map((child) => normalizeTables(child)),
+  };
+}
+
+function renderMarkdown(markdown: string): ReactNode {
+  const tree = remark().use(remarkGfm).parse(markdown) as MarkdownNode;
+  return renderNode(normalizeTables(tree), "doc");
 }
 
 export default function DocsPage() {
   const readmePath = join(process.cwd(), "README.md");
   const readme = readFileSync(readmePath, "utf-8");
-  const html = markdownToHtml(readme);
 
   return (
     <div className="docs">
       <div className="container">
-        <article className="docs__content" dangerouslySetInnerHTML={{ __html: html }} />
+        <article className="docs__content">{renderMarkdown(readme)}</article>
       </div>
     </div>
   );

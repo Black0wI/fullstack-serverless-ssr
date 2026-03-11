@@ -16,17 +16,17 @@ export default function Home() {
           <div className="animate-fade-in-up">
             <span className="badge">
               <span className="badge__dot" />
-              Production Ready
+              Production-Ready Foundation
             </span>
           </div>
 
           <h1 className="hero__title animate-fade-in-up animate-delay-1">
-            Ship <span className="hero__title-gradient">Serverless</span> Fast
+            Build <span className="hero__title-gradient">Serverless</span> Faster
           </h1>
 
           <p className="hero__subtitle animate-fade-in-up animate-delay-2">
-            Next.js 16 · SST v4 Ion · AWS Lambda + CloudFront · Cloudflare DNS. Full-stack
-            SSR, deploy in one command, scale globally.
+            Next.js 16, SST v4, AWS Lambda, CloudFront, and Cloudflare DNS in one reusable
+            boilerplate for full-stack SSR applications.
           </p>
 
           <div className="hero__actions animate-fade-in-up animate-delay-3">
@@ -52,10 +52,10 @@ export default function Home() {
               </div>
               <pre className="hero__code-body">
                 <code>
-                  <span className="comment">{`# Deploy SSR to AWS in one command`}</span>
+                  <span className="comment">{`# Customize, validate, and deploy`}</span>
                   {"\n"}
                   <span className="function">{"npx"}</span>
-                  {" sst deploy "}
+                  {" npm run check && npx sst deploy "}
                   <span className="string">{"--stage production"}</span>
                   {"\n\n"}
                   <span className="comment">{"# SST handles everything"}</span>
@@ -104,9 +104,9 @@ export default function Home() {
               <div className="feature-card__icon">🚀</div>
               <h3 className="feature-card__title">CLI Direct Deploy</h3>
               <p className="feature-card__description">
-                No CI/CD pipeline needed. Deploy from your terminal with{" "}
-                <code>npx sst deploy</code>. Built-in deploy guards prevent accidental
-                conflicts.
+                Validate locally, then deploy from your terminal with{" "}
+                <code>npx sst deploy</code>. Built-in guards stop unsafe default
+                configuration.
               </p>
             </div>
 
@@ -114,8 +114,8 @@ export default function Home() {
               <div className="feature-card__icon">🤖</div>
               <h3 className="feature-card__title">AI-Ready</h3>
               <p className="feature-card__description">
-                CLAUDE.md project context, Cursor rules, and Antigravity workflows.
-                Optimized for pair programming with AI assistants.
+                Project context files and local workflows are included so the boilerplate
+                stays usable with modern coding assistants.
               </p>
             </div>
 

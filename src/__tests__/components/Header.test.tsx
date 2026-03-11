@@ -5,7 +5,7 @@ import { Header } from "@/components/Header";
 describe("Header", () => {
   it("renders the logo text", () => {
     render(<Header />);
-    expect(screen.getByText("Fullstack Serverless SSR")).toBeInTheDocument();
+    expect(screen.getByText("Next.js SST Boilerplate")).toBeInTheDocument();
   });
 
   it("renders navigation links", () => {

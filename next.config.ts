@@ -6,9 +6,7 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  experimental: {
-    cacheComponents: true,
-  },
+  cacheComponents: true,
   async headers() {
     return [
       {

@@ -4,9 +4,9 @@ import { CacheDemo } from "./CacheDemo";
 import "./examples.css";
 
 export const metadata: Metadata = {
-  title: "Examples | Fullstack Serverless SSR",
+  title: "Examples | Next.js SST Boilerplate",
   description:
-    "Interactive examples showcasing Next.js 16 features: Server Actions with Zod validation, use cache directive, and more.",
+    "Illustrative examples showcasing Next.js 16 patterns included with the boilerplate.",
 };
 
 /**
@@ -29,8 +29,8 @@ export default function ExamplesPage() {
             Next.js 16 <span className="hero__title-gradient">Features</span>
           </h1>
           <p className="examples__subtitle">
-            Live demos of Server Actions, caching, and more — all running on AWS Lambda
-            via SST.
+            Illustrative demos of Server Actions and caching patterns. Use them as a
+            starting point, not as drop-in production features.
           </p>
         </header>
 

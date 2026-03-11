@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { env } from "@/lib/env";
 
 /**
- * Simple in-memory rate limiter for API routes.
- * For production with multiple Lambda instances, use Redis/DynamoDB instead.
+ * Best-effort in-memory limiter for local development and single-instance testing.
+ * This is intentionally disabled in production because Lambda/edge runtimes are distributed.
  */
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
@@ -34,8 +35,8 @@ function isRateLimited(ip: string): boolean {
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // ── Rate Limiting (API routes only) ──
-  if (pathname.startsWith("/api/")) {
+  // ── Best-effort Rate Limiting (non-production only) ──
+  if (pathname.startsWith("/api/") && !env.isProduction) {
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? "anonymous";
 
     if (isRateLimited(ip)) {

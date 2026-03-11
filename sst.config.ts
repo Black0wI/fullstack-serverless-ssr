@@ -2,26 +2,26 @@
 /// <reference path="./.sst/platform/config.d.ts" />
 
 // ── IMPORTANT ─────────────────────────────────────────────────────────
-// Renommer "tech-portal" ci-dessous AVANT le premier déploiement.
-// Ce nom doit être unique pour éviter tout conflit CloudFront.
+// Rename "replace-me" below BEFORE your first deployment.
+// This name must be unique to avoid CloudFront distribution conflicts.
 // ──────────────────────────────────────────────────────────────────────
-const APP_NAME = "tech-portal";
+const APP_NAME = "replace-me";
 
 export default $config({
   app(input) {
-    // ── Guard: empêcher le déploiement avec le nom par défaut ──
-    if (APP_NAME === "tech-portal") {
+    // ── Guard: prevent deployment with the default name ──
+    if (APP_NAME === "replace-me") {
       throw new Error(
-        '❌ Le nom du projet est toujours "tech-portal". ' +
-          "Renommez APP_NAME dans sst.config.ts pour éviter un conflit CloudFront.",
+        '❌ APP_NAME is still "replace-me". ' +
+          "Rename it in sst.config.ts to avoid a CloudFront conflict.",
       );
     }
 
-    // ── Guard: empêcher le déploiement sans domaine personnalisé ──
+    // ── Guard: prevent deployment without a custom domain ──
     if (!process.env.DOMAIN_NAME) {
       throw new Error(
-        "❌ DOMAIN_NAME n'est pas défini. " +
-          "Configurez-le dans .env ou exportez-le avant de déployer.",
+        "❌ DOMAIN_NAME is not set. " +
+          "Configure it in .env or export it before deploying.",
       );
     }
 
@@ -43,7 +43,7 @@ export default $config({
         dns: sst.cloudflare.dns(),
       },
       environment: {
-        // Variables d'environnement passées au runtime Next.js (Lambda)
+        // Environment variables passed to the Next.js runtime (Lambda)
         // AUTH_SECRET: process.env.AUTH_SECRET ?? "",
         // AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID ?? "",
         // AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET ?? "",

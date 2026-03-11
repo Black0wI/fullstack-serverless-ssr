@@ -5,8 +5,17 @@ export const defaultLocale = "fr" as const;
 
 export type Locale = (typeof locales)[number];
 
+function normalizeLocale(locale?: string | null): Locale {
+  if (!locale) {
+    return defaultLocale;
+  }
+
+  const baseLocale = locale.toLowerCase().split("-")[0];
+  return locales.includes(baseLocale as Locale) ? (baseLocale as Locale) : defaultLocale;
+}
+
 export default getRequestConfig(async ({ requestLocale }) => {
-  const locale = (await requestLocale) || defaultLocale;
+  const locale = normalizeLocale(await requestLocale);
 
   return {
     locale,

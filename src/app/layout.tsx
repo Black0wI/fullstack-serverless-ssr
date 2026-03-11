@@ -4,36 +4,31 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
+import { createMetadata } from "@/lib/seo";
+import { env } from "@/lib/env";
 
 export const metadata: Metadata = {
-  title: "Fullstack Serverless SSR — Next.js on AWS",
-  description:
-    "Modern Next.js application deployed on AWS CloudFront with Terraform IaC. Production-ready boilerplate with CI/CD, premium design, and Claude AI integration.",
+  ...createMetadata({
+    title: "Next.js SST Boilerplate",
+    description:
+      "Production-ready Next.js boilerplate for AWS using SST, OpenNext, CloudFront, and Cloudflare DNS.",
+  }),
   keywords: [
     "Next.js",
+    "SST",
+    "OpenNext",
     "AWS CloudFront",
-    "Terraform",
-    "Static Edge",
-    "React",
+    "AWS Lambda",
+    "Cloudflare DNS",
     "TypeScript",
+    "Boilerplate",
   ],
-  authors: [{ name: "Jean-Baptiste MONIN" }],
+  authors: [{ name: "Boilerplate Maintainers" }],
   manifest: "/manifest.json",
-  openGraph: {
-    title: "Fullstack Serverless SSR — Next.js on AWS",
-    description:
-      "Modern Next.js application deployed on AWS CloudFront with Terraform IaC.",
-    type: "website",
-    locale: "fr_FR",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Fullstack Serverless SSR",
+    title: "Next.js SST Boilerplate",
   },
 };
 
@@ -54,11 +49,11 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
         {/* Cloudflare Web Analytics — replace token with yours */}
-        {process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN && (
+        {env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN && (
           <script
             defer
             src="https://static.cloudflareinsights.com/beacon.min.js"
-            data-cf-beacon={`{"token": "${process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN}"}`}
+            data-cf-beacon={`{"token": "${env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN}"}`}
           />
         )}
       </head>

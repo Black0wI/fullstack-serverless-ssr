@@ -1,7 +1,7 @@
 // Service Worker — Offline-first caching strategy
 // Registered in layout.tsx for PWA support
 
-const CACHE_NAME = "tech-portal-v1";
+const CACHE_NAME = "nextjs-sst-boilerplate-v1";
 const STATIC_ASSETS = ["/", "/offline.html"];
 
 // Install — pre-cache essential assets

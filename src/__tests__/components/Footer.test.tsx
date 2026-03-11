@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 describe("Footer", () => {
   it("renders copyright text", () => {
     render(<Footer />);
+    expect(screen.getByText(/Next\.js SST Boilerplate/i)).toBeInTheDocument();
     expect(screen.getByText(/MIT License/i)).toBeInTheDocument();
   });
 

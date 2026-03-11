@@ -1,5 +1,5 @@
 # ============================================
-# FULLSTACK SERVERLESS SSR — Makefile
+# NEXT.JS SST BOILERPLATE — Makefile
 # ============================================
 
 .PHONY: setup dev build lint format type-check deploy deploy-staging clean help test

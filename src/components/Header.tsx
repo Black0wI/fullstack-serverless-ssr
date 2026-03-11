@@ -5,8 +5,8 @@ export function Header() {
     <header className="header">
       <div className="container header__inner">
         <Link href="/" className="header__logo">
-          <span className="header__logo-icon">FS</span>
-          <span className="header__logo-text">Fullstack Serverless SSR</span>
+          <span className="header__logo-icon">NS</span>
+          <span className="header__logo-text">Next.js SST Boilerplate</span>
         </Link>
 
         <nav>

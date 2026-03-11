@@ -4,15 +4,13 @@ test.describe("Landing Page", () => {
   test("should load and display hero section", async ({ page }) => {
     await page.goto("/");
 
-    // Header is visible
     await expect(page.locator(".header")).toBeVisible();
-    await expect(page.locator(".header__logo-text")).toHaveText("Tech Portal");
-
-    // Hero content
-    await expect(page.locator(".hero__title")).toContainText("Edge");
-    await expect(page.locator(".badge")).toContainText("Production Ready");
-
-    // CTA buttons
+    await expect(page.locator(".header__logo-text")).toHaveText(
+      "Next.js SST Boilerplate",
+    );
+    await expect(page.locator(".hero__title")).toContainText("Build");
+    await expect(page.locator(".hero__title")).toContainText("Serverless");
+    await expect(page.locator(".badge")).toContainText("Production-Ready Foundation");
     await expect(page.locator(".hero__actions .btn--primary")).toBeVisible();
     await expect(page.locator(".hero__actions .btn--ghost")).toBeVisible();
   });
@@ -23,13 +21,14 @@ test.describe("Landing Page", () => {
     const cards = page.locator(".feature-card");
     await expect(cards).toHaveCount(6);
 
-    // Verify key feature titles
-    await expect(cards.nth(0)).toContainText("Static Edge Delivery");
-    await expect(cards.nth(1)).toContainText("Terraform IaC");
-    await expect(cards.nth(2)).toContainText("GitHub Actions");
-    await expect(cards.nth(3)).toContainText("Claude AI");
-    await expect(cards.nth(4)).toContainText("TypeScript Strict");
-    await expect(cards.nth(5)).toContainText("Premium Design System");
+    await expect(page.getByRole("heading", { name: "Full-Stack SSR" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "SST v4 Ion" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "CLI Direct Deploy" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "AI-Ready" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "TypeScript Strict" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Premium Design System" }),
+    ).toBeVisible();
   });
 
   test("should display footer", async ({ page }) => {
@@ -41,15 +40,28 @@ test.describe("Landing Page", () => {
 
   test("should have correct meta title", async ({ page }) => {
     await page.goto("/");
-    await expect(page).toHaveTitle(/Tech Portal/);
+    await page.waitForLoadState("domcontentloaded");
+    await expect(page).toHaveTitle(/Next\.js SST Boilerplate/);
   });
 });
 
 test.describe("Navigation", () => {
   test("should navigate to features section", async ({ page }) => {
     await page.goto("/");
-    await page.click('a[href="#features"]');
+    await page.getByRole("link", { name: "Explore Features" }).click();
     await expect(page.locator(".features")).toBeInViewport();
+  });
+
+  test("should open examples page from header navigation", async ({ page, isMobile }) => {
+    test.skip(isMobile, "Desktop navigation only");
+    await page.goto("/");
+    await page.getByRole("link", { name: "Examples" }).click();
+    await expect(page).toHaveURL(/\/examples\/?$/);
+    await expect(
+      page.getByRole("heading", { name: /Next\.js 16 Features/i }),
+    ).toBeVisible();
+    await expect(page.getByText("Server Actions + Zod")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "use cache" })).toBeVisible();
   });
 });
 
