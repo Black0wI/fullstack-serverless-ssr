@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Getting Started guide** — Comprehensive onboarding doc covering project setup, development, deployment, releases, and common recipes (`docs/GETTING_STARTED.md`)
+
 ## [1.1.0] — 2026-03-11
 
 ### Added

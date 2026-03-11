@@ -156,6 +156,7 @@ This boilerplate ships with project context files that let AI coding assistants 
 
 ## Documentation
 
+- **[docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)** — Complete onboarding guide
 - **[docs/specs/](docs/specs/)** — Functional specifications (templates)
 - **[docs/architecture/decisions/](docs/architecture/decisions/)** — Architecture Decision Records
 
