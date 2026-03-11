@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-03-11
+
 ### Added
 
 - **Versioning & Changelog** — SemVer rules and CHANGELOG format added to all 4 AI context files (CLAUDE.md, GEMINI.md, CODEX.md, AGENTS.md)
@@ -106,6 +108,7 @@ First stable release of the Next.js SST Boilerplate.
 - Migration from Terraform to SST v3 (Ion)
 - Environment validation, rate limiting, auth, i18n, SEO, error boundary
 
+[1.1.0]: https://github.com/Black0wI/fullstack-serverless-ssr/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Black0wI/fullstack-serverless-ssr/compare/v0.4.0...v1.0.0
 [0.4.0]: https://github.com/Black0wI/fullstack-serverless-ssr/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Black0wI/fullstack-serverless-ssr/compare/v0.2.0...v0.3.0
