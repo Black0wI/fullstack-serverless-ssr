@@ -1,4 +1,4 @@
-# Cursor AI Rules — Fullstack Serverless SSR
+# Cursor AI Rules — Next.js SST Boilerplate
 # These rules are also compatible with other AI coding assistants.
 
 ## Tech Stack
@@ -20,6 +20,11 @@
 - Pages: `src/app/**/page.tsx`
 - Styles: `src/app/globals.css` (design system)
 - Infrastructure: `sst.config.ts`
+
+## Versioning
+- Follow SemVer (MAJOR.MINOR.PATCH)
+- Update CHANGELOG.md on every commit (Keep a Changelog format)
+- Bump version in package.json when releasing
 
 ## Important
 - This is a FULL-STACK SSR app — API routes, Server Actions, ISR supported

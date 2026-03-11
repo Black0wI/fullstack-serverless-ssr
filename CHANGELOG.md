@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Versioning & Changelog** — SemVer rules and CHANGELOG format added to all 4 AI context files (CLAUDE.md, GEMINI.md, CODEX.md, AGENTS.md)
+- **`/push` workflow** — Now includes CHANGELOG update and version bump steps
+
+### Changed
+
+- **ADR-0001** — Replaced outdated static-export-cloudfront ADR with fullstack-ssr-aws-sst-v4 reflecting current architecture
+- **AI Integration** — Expanded README section with all 7 context files
+
 ## [1.0.0] — 2026-03-11
 
 First stable release of the Next.js SST Boilerplate.

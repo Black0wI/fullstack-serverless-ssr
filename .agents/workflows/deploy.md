@@ -1,51 +1,53 @@
 ---
-description: Déployer l'application en production
+description: Deploy the application to production
 ---
 
 # Deploy Production
 
-Déploie l'application Next.js SSR sur AWS via SST (Lambda + CloudFront + S3).
+Deploy the Next.js SSR application to AWS via SST (Lambda + CloudFront + S3).
 
-## Prérequis
+## Prerequisites
 
-- AWS CLI configuré (`aws sts get-caller-identity` doit fonctionner)
-- Variables d'environnement configurées (`.env` ou export shell) :
-  - `DOMAIN_NAME` — le domaine cible
-  - `CLOUDFLARE_API_TOKEN` — token API Cloudflare
-  - `CLOUDFLARE_DEFAULT_ACCOUNT_ID` — ID du compte Cloudflare
+- AWS CLI configured (`aws sts get-caller-identity` must work)
+- Environment variables configured (`.env` or shell export):
+  - `DOMAIN_NAME` — target domain
+  - `CLOUDFLARE_API_TOKEN` — Cloudflare API token
+  - `CLOUDFLARE_DEFAULT_ACCOUNT_ID` — Cloudflare account ID
 
-## Étapes
+## Steps
 
-// turbo 1. Installer les dépendances :
+// turbo
+
+1. Install dependencies:
 
 ```bash
 npm install
 ```
 
-// turbo 2. Déployer avec SST :
+// turbo 2. Deploy with SST:
 
 ```bash
 npx sst deploy --stage production
 ```
 
-3. Vérifier le déploiement :
+3. Verify the deployment:
 
 ```bash
-echo "✅ Vérifier l'URL affichée dans les outputs SST"
+echo "✅ Check the URL shown in SST outputs"
 ```
 
-## Raccourci
+## Shortcut
 
-Tout-en-un via le Makefile :
+All-in-one via the Makefile:
 
 ```bash
 make deploy
 ```
 
-## Autres commandes utiles
+## Other Useful Commands
 
 ```bash
-make sst-diff     # Prévisualiser les changements infra
-make sst-remove   # Supprimer l'infrastructure SST
-make sst-dev      # Mode dev SST (live Lambda)
+make sst-diff     # Preview infrastructure changes
+make sst-remove   # Remove SST infrastructure
+make sst-dev      # SST dev mode (live Lambda)
 ```

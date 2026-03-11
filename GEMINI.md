@@ -139,6 +139,44 @@ The infrastructure is defined in `sst.config.ts`:
 - **Components**: `.glass`, `.btn`, `.badge`
 - **Animations**: `fadeInUp`, `float`, `shimmer`, `gradientShift`
 
+## Versioning & Changelog
+
+This project follows [Semantic Versioning](https://semver.org/) (SemVer) and maintains a `CHANGELOG.md` using the [Keep a Changelog](https://keepachangelog.com/) format.
+
+### SemVer Rules
+
+- **MAJOR** (x.0.0) — Breaking changes (API, config schema, infrastructure)
+- **MINOR** (0.x.0) — New features, new pages, new dependencies
+- **PATCH** (0.0.x) — Bug fixes, typos, doc updates, refactors with no behavior change
+
+### On Every Commit
+
+When committing changes, you **MUST**:
+
+1. **Update `CHANGELOG.md`** — Add entries under an `## [Unreleased]` section at the top, grouped by `### Added`, `### Changed`, `### Fixed`, `### Removed` as applicable
+2. **Bump `version` in `package.json`** — When the user explicitly requests a release or when changes warrant a version bump
+3. **Tag releases** — When bumping version, create an annotated git tag: `git tag -a vX.Y.Z -m "vX.Y.Z — description"`
+
+### Changelog Entry Format
+
+```markdown
+## [Unreleased]
+
+### Added
+
+- **Feature name** — Short description of what was added
+
+### Changed
+
+- **Component name** — What changed and why
+
+### Fixed
+
+- **Bug description** — What was broken and how it was fixed
+```
+
+When a version is released, rename `[Unreleased]` to `[X.Y.Z] — YYYY-MM-DD` and add a comparison link at the bottom of the file.
+
 ## Important Notes
 
 - SST v4 uses OpenNext to deploy Next.js on AWS (Lambda + CloudFront + S3)

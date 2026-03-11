@@ -1,52 +1,52 @@
 ---
-description: Démarrer l'environnement de développement local
+description: Start the local development environment
 ---
 
 # Dev Local
 
-Lance le serveur de développement Next.js avec Turbopack.
+Start the Next.js development server with Turbopack.
 
-## Étapes
+## Steps
 
 // turbo
 
-1. Installer les dépendances (si nécessaire) :
+1. Install dependencies (if needed):
 
 ```bash
 npm install
 ```
 
-// turbo 2. Lancer le serveur de développement :
+// turbo 2. Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Le serveur démarre sur `http://localhost:4040`.
+The server starts at `http://localhost:4040`.
 
-## Vérification qualité
+## Quality Checks
 
-// turbo 3. Lancer le lint :
+// turbo 3. Run linting:
 
 ```bash
 npm run lint
 ```
 
-// turbo 4. Vérifier les types :
+// turbo 4. Check types:
 
 ```bash
 npm run type-check
 ```
 
-// turbo 5. Vérifier le formatage :
+// turbo 5. Check formatting:
 
 ```bash
 npm run format:check
 ```
 
-## Build de test
+## Test Build
 
-// turbo 6. Tester le build SSR :
+// turbo 6. Test the SSR build:
 
 ```bash
 npm run build && echo "✅ Build OK"
