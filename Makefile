@@ -2,11 +2,12 @@
 # NEXT.JS SST BOILERPLATE — Makefile
 # ============================================
 
-.PHONY: setup dev build lint format type-check deploy deploy-staging clean help test
+.PHONY: setup dev build lint format type-check deploy deploy-staging clean help test check release
 
 # ── Variables ──
 STAGE ?= production
 AWS_REGION ?= eu-west-3
+VERSION ?=
 
 # ── Help ──
 help: ## Show this help message
@@ -76,3 +77,13 @@ sst-remove-staging: ## Remove staging infrastructure
 clean: ## Clean build artifacts
 	rm -rf .next/ .sst/ node_modules/.cache .open-next/
 	@echo "🧹 Cleaned."
+
+# ── Release ──
+release: ## Create a release (VERSION=x.y.z required)
+	@test -n "$(VERSION)" || (echo "❌ VERSION is required. Usage: make release VERSION=1.1.0" && exit 1)
+	@echo "📦 Releasing v$(VERSION)..."
+	npm run lint && npm run type-check && npm test && npm run build
+	git add -A && git commit -m "release: v$(VERSION)"
+	git tag -a v$(VERSION) -m "v$(VERSION)"
+	git push origin HEAD --tags
+	@echo "✅ Released v$(VERSION)!"

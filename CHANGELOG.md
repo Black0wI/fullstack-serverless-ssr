@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Versioning & Changelog** — SemVer rules and CHANGELOG format added to all 4 AI context files (CLAUDE.md, GEMINI.md, CODEX.md, AGENTS.md)
 - **`/push` workflow** — Now includes CHANGELOG update and version bump steps
+- **`/release` workflow** — Full release process: changelog finalization, version bump, quality gate, git tag, push
+- **`make release`** — Makefile target for one-command releases (`make release VERSION=x.y.z`)
 
 ### Changed
 
@@ -45,7 +47,7 @@ First stable release of the Next.js SST Boilerplate.
 - **Sitemap + robots.txt** — auto-generated via `next-sitemap`
 - **DX tooling** — Husky, Commitlint, lint-staged, Renovate, Prettier
 - **AI context files** — CLAUDE.md, GEMINI.md, CODEX.md, AGENTS.md, `.cursorrules`
-- **Antigravity workflows** — `/deploy`, `/dev`, `/push`
+- **Antigravity workflows** — `/deploy`, `/dev`, `/push`, `/release`
 - **Dev Container** — VS Code one-click onboarding
 - **Multi-stage deploys** — `make deploy`, `make deploy-staging`
 - **Deploy guards** — SST throws if APP_NAME or DOMAIN_NAME is not configured

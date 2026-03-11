@@ -76,6 +76,7 @@ npm test          # Unit tests (Vitest)
 npm run test:e2e  # End-to-end tests (Playwright)
 npm run check     # Lint + type-check + unit tests + build + E2E
 npm run analyze   # Bundle size analysis
+make release VERSION=1.1.0  # Create a SemVer release with tag
 ```
 
 ## Infrastructure Setup
@@ -149,7 +150,7 @@ This boilerplate ships with project context files that let AI coding assistants 
 | `AGENTS.md`             | Generic AI agents           | Agent-agnostic project context                    |
 | `.cursorrules`          | Cursor AI                   | Inline coding rules and constraints               |
 | `.claude/settings.json` | Claude Code                 | Allowed tool permissions                          |
-| `.agents/workflows/`    | Antigravity                 | `/deploy`, `/dev`, `/push` automation workflows   |
+| `.agents/workflows/`    | Antigravity                 | `/deploy`, `/dev`, `/push`, `/release` workflows  |
 
 > **Tip**: When you open the project in an AI-assisted editor, the assistant automatically reads the relevant context file and understands the stack, file structure, available commands, and coding conventions.
 
